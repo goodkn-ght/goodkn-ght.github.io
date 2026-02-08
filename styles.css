@@ -297,3 +297,36 @@ pre {
   color: var(--accent);
   overflow-x: auto;
 }
+
+.tools-grid {
+  margin-top: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.tools-grid article {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1rem;
+  background: rgba(0,0,0,0.2);
+}
+
+textarea, input {
+  width: 100%;
+  border-radius: 10px;
+  border: 1px solid var(--border);
+  background: rgba(0,0,0,0.3);
+  color: var(--fg);
+  padding: 0.5rem;
+  margin-bottom: 0.75rem;
+}
+
+.btn--sm {
+  padding: 0.5rem 0.8rem;
+  font-size: 0.85rem;
+}
+
+.muted {
+  color: var(--muted);
+}
