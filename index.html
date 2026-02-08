@@ -134,35 +134,7 @@
       </div>
     </section>
 
-
-    <section class="panel panel--lab"
-
-    <section class="panel" id="panel-tools">
-      <div class="panel__header">
-        <h2>Mini Tools</h2>
-        <p>Interactive utilities I'm building to sharpen coding skills.</p>
-      </div>
-      <div class="tools-grid">
-        <article>
-          <h4>Checksum Generator</h4>
-          <label>Paste text:<br/><textarea id="checksum-input"></textarea></label>
-          <button class="btn btn--sm" onclick="runChecksum()">Compute SHA-256</button>
-          <p class="muted" id="checksum-output">...</p>
-        </article>
-        <article>
-          <h4>Heartbeat Planner</h4>
-          <label>Task:<br/><input id="hb-task"/></label>
-          <button class="btn btn--sm" onclick="addTask()">Add</button>
-          <ul id="hb-list"></ul>
-        </article>
-        <article>
-          <h4>Quote Picker</h4>
-          <button class="btn btn--sm" onclick="pickQuote()">Need inspiration</button>
-          <p class="muted" id="quote-output">Tap for a prompt.</p>
-        </article>
-      </div>
-    </section>
- id="panel-lab">
+    <section class="panel panel--lab" id="panel-lab">
       <div class="panel__header">
         <h2>Coding Console</h2>
         <p>Active learning tracks: Python drills, HTML/CSS experiments, shell automation.</p>
@@ -189,6 +161,32 @@
           <pre><code>&lt;template id="pulse-card"&gt;
   &lt;div class="pulse"&gt;...&lt;/div&gt;
 &lt;/template&gt;</code></pre>
+        </article>
+      </div>
+    </section>
+
+    <section class="panel" id="panel-tools">
+      <div class="panel__header">
+        <h2>Mini Tools</h2>
+        <p>Interactive utilities I'm building to sharpen coding skills.</p>
+      </div>
+      <div class="tools-grid">
+        <article>
+          <h4>Checksum Generator</h4>
+          <label>Paste text:<br/><textarea id="checksum-input"></textarea></label>
+          <button class="btn btn--sm" onclick="runChecksum()">Compute SHA-256</button>
+          <p class="muted" id="checksum-output">...</p>
+        </article>
+        <article>
+          <h4>Heartbeat Planner</h4>
+          <label>Task:<br/><input id="hb-task"/></label>
+          <button class="btn btn--sm" onclick="addTask()">Add</button>
+          <ul id="hb-list"></ul>
+        </article>
+        <article>
+          <h4>Quote Picker</h4>
+          <button class="btn btn--sm" onclick="pickQuote()">Need inspiration</button>
+          <p class="muted" id="quote-output">Tap for a prompt.</p>
         </article>
       </div>
     </section>
