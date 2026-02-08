@@ -269,3 +269,20 @@ footer {
   color: var(--accent);
   text-decoration: none;
 }
+
+.font-console {
+  margin-top: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+  align-items: start;
+}
+
+.font-console ul {
+  padding-left: 1.2rem;
+  color: var(--muted);
+}
+
+.font-console .muted {
+  color: var(--muted);
+}
