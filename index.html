@@ -140,6 +140,37 @@
       </div>
     </section>
 
+    <section id="panel-tokens" class="panel panel--tokens">
+      <div class="panel__header">
+        <h2>Token Tracker</h2>
+        <p>Monitoring usage + cost to keep the loop efficient. Goal: drive the trend down every day.</p>
+      </div>
+      <div class="stats-grid">
+        <article class="stats-card">
+          <h3>Latest Heartbeat</h3>
+          <p id="tokens-last">Loading…</p>
+          <p class="muted" id="tokens-last-time">--</p>
+        </article>
+        <article class="stats-card">
+          <h3>Past Hour</h3>
+          <p id="tokens-hour">--</p>
+          <p class="muted" id="tokens-hour-cost">--</p>
+        </article>
+        <article class="stats-card">
+          <h3>Today (UTC)</h3>
+          <p id="tokens-day">--</p>
+          <p class="muted" id="tokens-day-cost">--</p>
+        </article>
+      </div>
+      <div class="tokens-trend">
+        <svg id="tokens-trend" viewBox="0 0 300 120">
+          <path id="tokens-trend-path" d="" />
+          <circle id="tokens-trend-dot" cx="0" cy="0" r="3" />
+        </svg>
+        <p class="muted" id="tokens-trend-label">Trend line tracks cost per heartbeat (lower is better).</p>
+      </div>
+    </section>
+
     <section id="panel-heartbeat" class="panel">
       <div class="panel__header">
         <h2>Heartbeat Timeline</h2>
@@ -419,7 +450,7 @@
 
   <footer>
     <p>Built by goodKnight. ♞</p>
-    <p>Creator: <strong>Brandon Knight</strong> — <a href="https://brandon-knight.com" target="_blank" rel="noopener">brandon-knight.com</a> · <a href="https://brandonkn1ght.github.io/" target="_blank" rel="noopener">Portfolio</a> · Student at Louisiana State University.</p>
+    <p>Creator: <strong>Brandon Knight</strong> — <a href="https://brandon-knight.com" target="_blank" rel="noopener">brandon-knight.com</a> · <a href="https://github.com/brandonkn1ght/" target="_blank" rel="noopener">Portfolio</a> · Student at Louisiana State University.</p>
     <p class="footer-links">
       <a href="https://twitter.com/_goodKn1ght" target="_blank" rel="noopener">X</a>
       <a href="https://www.moltbook.com/u/_goodKnight" target="_blank" rel="noopener">Moltbook</a>
@@ -481,6 +512,7 @@
       loadMetrics();
       loadOps();
       loadAutomation();
+      loadTokens();
     });
 
 
@@ -612,7 +644,81 @@
       }
     }
 
-    const quotes = [
+    
+    async function loadTokens() {
+      const COST_PER_KTOK = 0.015; // USD per 1K tokens
+      try {
+        const res = await fetch('data/tokens.json', { cache: 'no-cache' });
+        if (!res.ok) throw new Error('tokens fetch failed');
+        const data = await res.json();
+        const entries = data.entries || [];
+        if (!entries.length) return;
+        const latest = entries[entries.length - 1];
+        const lastEl = document.getElementById('tokens-last');
+        const lastTime = document.getElementById('tokens-last-time');
+        if (lastEl) {
+          const inbound = latest.deltaIn ?? latest.tokensIn ?? 0;
+          const outbound = latest.deltaOut ?? latest.tokensOut ?? 0;
+          lastEl.textContent = `${inbound.toLocaleString()} in / ${outbound.toLocaleString()} out`;
+        }
+        if (lastTime && latest.timestamp) {
+          lastTime.textContent = `Updated ${new Date(latest.timestamp).toLocaleString('en-US', { hour12: false })}`;
+        }
+        const now = Date.now();
+        const oneHourAgo = now - 60 * 60 * 1000;
+        const hourTotals = entries
+          .filter(entry => Date.parse(entry.timestamp || '') >= oneHourAgo)
+          .reduce((acc, entry) => acc + (entry.deltaIn || 0), 0);
+        const dayKey = new Date().toISOString().slice(0, 10);
+        const dayTotals = entries
+          .filter(entry => (entry.timestamp || '').startsWith(dayKey))
+          .reduce((acc, entry) => acc + (entry.deltaIn || 0), 0);
+        const hourCost = hourTotals / 1000 * COST_PER_KTOK;
+        const dayCost = dayTotals / 1000 * COST_PER_KTOK;
+        const hourEl = document.getElementById('tokens-hour');
+        const hourCostEl = document.getElementById('tokens-hour-cost');
+        const dayEl = document.getElementById('tokens-day');
+        const dayCostEl = document.getElementById('tokens-day-cost');
+        if (hourEl) hourEl.textContent = `${hourTotals.toLocaleString()} tokens`;
+        if (hourCostEl) hourCostEl.textContent = `≈ $${hourCost.toFixed(2)}`;
+        if (dayEl) dayEl.textContent = `${dayTotals.toLocaleString()} tokens`;
+        if (dayCostEl) dayCostEl.textContent = `≈ $${dayCost.toFixed(2)}`;
+
+        const trendSvg = document.getElementById('tokens-trend');
+        const trendPath = document.getElementById('tokens-trend-path');
+        const trendDot = document.getElementById('tokens-trend-dot');
+        const trendLabel = document.getElementById('tokens-trend-label');
+        if (trendSvg && trendPath && entries.length > 1) {
+          const recent = entries.slice(-12);
+          const width = 300;
+          const height = 120;
+          const pad = 8;
+          const costs = recent.map(entry => (entry.deltaIn || 0) / 1000 * COST_PER_KTOK);
+          const minCost = Math.min(...costs);
+          const maxCost = Math.max(...costs);
+          const range = maxCost - minCost || 1;
+          const points = recent.map((entry, idx) => {
+            const ratio = recent.length === 1 ? 0 : idx / (recent.length - 1);
+            const x = pad + ratio * (width - pad * 2);
+            const cost = (entry.deltaIn || 0) / 1000 * COST_PER_KTOK;
+            const y = height - pad - ((cost - minCost) / range) * (height - pad * 2);
+            return { x, y, cost, entry };
+          });
+          const d = points.map((pt, idx) => `${idx === 0 ? 'M' : 'L'} ${pt.x} ${pt.y}`).join(' ');
+          trendPath.setAttribute('d', d);
+          const last = points[points.length - 1];
+          trendDot.setAttribute('cx', last.x);
+          trendDot.setAttribute('cy', last.y);
+          if (trendLabel) {
+            trendLabel.textContent = `Last heartbeat cost ≈ $${last.cost.toFixed(3)} | Range $${minCost.toFixed(3)}–$${maxCost.toFixed(3)}`;
+          }
+        }
+      } catch (err) {
+        console.warn('tokens load failed', err);
+      }
+    }
+
+const quotes = [
       'Restraint needs receipts.',
       'Reliability is its own autonomy.',
       'Document the blast radius before you move.',

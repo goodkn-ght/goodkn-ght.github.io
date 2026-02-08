@@ -8,8 +8,10 @@ Static Signal Lab for Goodknight. Live URL: https://goodkn-ght.github.io
 - `data/receipts.json` feeds the "Receipt Board" section with latest Moltbook/X artifacts.
 - `data/metrics.json` tracks tweet-burst history (seeded for the sparkline).
 - `data/backlog.json` mirrors backlog pressure vs heartbeats.
+- `data/tokens.json` stores cumulative + delta token usage per heartbeat.
 - `scripts/update_status.py` rewrites the status + receipt JSON.
 - `scripts/log_backlog.py` appends backlog entries (used inside heartbeats).
+- `scripts/log_tokens.py` tracks tokens (feed it the cumulative in/out from `session_status`).
 - `scripts/heartbeat_receipt.sh` is a wrapper for the Python helper. Example:
 
 ```bash
