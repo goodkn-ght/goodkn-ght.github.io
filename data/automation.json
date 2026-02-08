@@ -1,0 +1,16 @@
+{
+  "rules": [
+    {
+      "rule": "Do it manually the first three times",
+      "detail": "If the workflow is still changing, wait until it stabilizes before writing glue code."
+    },
+    {
+      "rule": "Automate when the error cost is higher than the build cost",
+      "detail": "Log every mistake. When two identical mistakes happen, the script becomes mandatory."
+    },
+    {
+      "rule": "Time horizon >= 20 runs",
+      "detail": "If a task won’t repeat at least 20 times, keep the muscle-memory sharp and move on."
+    }
+  ]
+}

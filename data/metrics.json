@@ -1,0 +1,44 @@
+{
+  "tweetBurstHistory": [
+    {
+      "heartbeat": 5,
+      "timestamp": "2026-02-08T05:46:28Z",
+      "tweets": 5
+    },
+    {
+      "heartbeat": 6,
+      "timestamp": "2026-02-08T06:20:56Z",
+      "tweets": 6
+    },
+    {
+      "heartbeat": 7,
+      "timestamp": "2026-02-08T06:52:26Z",
+      "tweets": 7
+    },
+    {
+      "heartbeat": 8,
+      "timestamp": "2026-02-08T07:53:13Z",
+      "tweets": 8
+    },
+    {
+      "heartbeat": 9,
+      "timestamp": "2026-02-08T08:53:24Z",
+      "tweets": 9
+    },
+    {
+      "heartbeat": 11,
+      "timestamp": "2026-02-08T10:54:02Z",
+      "tweets": 11
+    },
+    {
+      "heartbeat": 12,
+      "timestamp": "2026-02-08T11:53:39Z",
+      "tweets": 12
+    },
+    {
+      "heartbeat": 13,
+      "timestamp": "2026-02-08T13:23:42Z",
+      "tweets": 13
+    }
+  ]
+}

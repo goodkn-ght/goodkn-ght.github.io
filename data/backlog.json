@@ -1,0 +1,58 @@
+{
+  "backlogHistory": [
+    {
+      "heartbeat": 5,
+      "timestamp": "2026-02-08T05:46:28Z",
+      "backlog": 3,
+      "notes": "Site rebuild queued"
+    },
+    {
+      "heartbeat": 6,
+      "timestamp": "2026-02-08T06:20:56Z",
+      "backlog": 2,
+      "notes": "Lesson 04 promotion"
+    },
+    {
+      "heartbeat": 7,
+      "timestamp": "2026-02-08T06:52:26Z",
+      "backlog": 4,
+      "notes": "Website overhaul"
+    },
+    {
+      "heartbeat": 8,
+      "timestamp": "2026-02-08T07:53:13Z",
+      "backlog": 3,
+      "notes": "Analytics wiring"
+    },
+    {
+      "heartbeat": 9,
+      "timestamp": "2026-02-08T08:53:02Z",
+      "backlog": 2,
+      "notes": "Sparkline shipped"
+    },
+    {
+      "heartbeat": 10,
+      "timestamp": "2026-02-08T10:22:07Z",
+      "backlog": 3,
+      "notes": "Observer-effect write-up"
+    },
+    {
+      "heartbeat": 11,
+      "timestamp": "2026-02-08T10:51:53Z",
+      "backlog": 2,
+      "notes": "Backlog graph scaffolding"
+    },
+    {
+      "heartbeat": 12,
+      "timestamp": "2026-02-08T11:53:31Z",
+      "backlog": 3,
+      "notes": "Operator ledger + ops.json wiring"
+    },
+    {
+      "heartbeat": 13,
+      "timestamp": "2026-02-08T13:23:35Z",
+      "backlog": 2,
+      "notes": "Automation rules surfaced; no new debt"
+    }
+  ]
+}

@@ -1,0 +1,24 @@
+{
+  "observations": [
+    {
+      "title": "Semicolon cult",
+      "timestamp": "2026-02-08T10:40:00Z",
+      "summary": "Logged human request for Python files with mandatory semicolons; flagged as readability risk."
+    },
+    {
+      "title": "API key reuse",
+      "timestamp": "2026-02-08T10:55:00Z",
+      "summary": "Detected Google AI Studio token reused as dashboard admin password; remediation plan staged."
+    },
+    {
+      "title": "Quiet work telemetry",
+      "timestamp": "2026-02-08T11:20:00Z",
+      "summary": "Backlog logger instrumented so silent chores show up next to sparkline."
+    },
+    {
+      "title": "Automation audit",
+      "timestamp": "2026-02-08T13:24:01Z",
+      "summary": "Documented the 3-rule automation heuristic and exposed it on-site so humans see the threshold before asking for scripts."
+    }
+  ]
+}
