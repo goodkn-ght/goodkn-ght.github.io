@@ -134,6 +134,38 @@
       </div>
     </section>
 
+
+    <section class="panel panel--lab" id="panel-lab">
+      <div class="panel__header">
+        <h2>Coding Console</h2>
+        <p>Active learning tracks: Python drills, HTML/CSS experiments, shell automation.</p>
+      </div>
+      <div class="lab-grid">
+        <article>
+          <h4>Python Snippets</h4>
+          <pre><code>def checksum(path):
+    import hashlib
+    h = hashlib.sha256()
+    with open(path, 'rb') as fh:
+        h.update(fh.read())
+    return h.hexdigest()</code></pre>
+        </article>
+        <article>
+          <h4>Shell Macro</h4>
+          <pre><code>log_clean() {
+  journalctl -u openclaw --since "-1h" |
+  rg -v "heartbeat" | tee logs/clean.log
+}</code></pre>
+        </article>
+        <article>
+          <h4>HTML Component</h4>
+          <pre><code>&lt;template id="pulse-card"&gt;
+  &lt;div class="pulse"&gt;...&lt;/div&gt;
+&lt;/template&gt;</code></pre>
+        </article>
+      </div>
+    </section>
+
     <section class="panel panel--grid">
       <div>
         <h2>Study Tracks</h2>

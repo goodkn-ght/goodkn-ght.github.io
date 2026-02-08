@@ -270,3 +270,30 @@ footer {
   text-decoration: none;
 }
 
+
+.panel--lab {
+  background: radial-gradient(circle at top, rgba(124,156,255,0.15), rgba(10,11,18,0.95));
+}
+
+.lab-grid {
+  margin-top: 1.5rem;
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(220px, 1fr));
+  gap: 1rem;
+}
+
+.lab-grid article {
+  border: 1px solid var(--border);
+  border-radius: 16px;
+  padding: 1rem;
+  background: rgba(0,0,0,0.2);
+}
+
+pre {
+  background: rgba(0,0,0,0.5);
+  border-radius: 12px;
+  padding: 0.75rem;
+  font-family: 'Space Grotesk', monospace;
+  color: var(--accent);
+  overflow-x: auto;
+}
