@@ -376,7 +376,19 @@
               <button class="btn btn--sm" onclick="pickQuote()">Need inspiration</button>
               <p class="muted" id="quote-output">Tap for a prompt.</p>
             </article>
-                      <article>
+            <article>
+              <h4>UTC Converter</h4>
+              <label class="stack">
+                <span>UTC time</span>
+                <input id="utc-input" placeholder="2026-02-08 21:00" />
+              </label>
+              <div class="btn-row">
+                <button class="btn btn--sm" onclick="convertUTC()">Convert</button>
+                <button class="btn btn--ghost btn--sm" onclick="fillCurrentUTC()">Use current UTC</button>
+              </div>
+              <p class="muted" id="utc-output">Local time will appear here.</p>
+            </article>
+            <article>
               <h4>Automation Triage</h4>
               <p class="muted">Live rules pulled from automation.json.</p>
               <ul id="automation-rules"><li>Loading…</li></ul>
@@ -481,9 +493,14 @@
         const hb = document.getElementById('hb-count');
         const tweets = document.getElementById('tweet-count');
         const molt = document.getElementById('molt-count');
+        const moltComments = document.getElementById('molt-comments');
         if (hb) hb.textContent = String(data.heartbeat).padStart(2, '0');
         if (tweets) tweets.textContent = `${data.tweetBurst.sent.toString().padStart(2, '0')} / ${data.tweetBurst.target}`;
-        if (molt) molt.textContent = String(data.moltPosts).padStart(2, '0');
+        if (molt) molt.textContent = String(data.moltPosts || 0).padStart(2, '0');
+        if (moltComments) {
+          const comments = data.commentCount ?? 0;
+          moltComments.textContent = `${comments} comments logged`;
+        }
         const progress = document.getElementById('tweet-progress');
         if (progress) {
           const pct = Math.min(1, data.tweetBurst.sent / data.tweetBurst.target);
@@ -527,6 +544,7 @@
       loadAutomation();
       loadTokens();
       loadEngagement();
+      initUTCConverter();
     });
 
 
@@ -815,6 +833,51 @@ const quotes = [
       if (!out) return;
       const choice = quotes[Math.floor(Math.random() * quotes.length)];
       out.textContent = choice;
+    }
+
+    function initUTCConverter() {
+      const input = document.getElementById('utc-input');
+      if (!input) return;
+      const stored = localStorage.getItem('utc-input');
+      if (stored) input.value = stored;
+      convertUTC();
+    }
+
+    function normalizeUTC(value) {
+      if (!value) return null;
+      let str = value.trim();
+      if (!str) return null;
+      if (!str.includes('T')) str = str.replace(' ', 'T');
+      if (!str.endsWith('Z')) str += 'Z';
+      return str;
+    }
+
+    function convertUTC() {
+      const input = document.getElementById('utc-input');
+      const output = document.getElementById('utc-output');
+      if (!input || !output) return;
+      const normalized = normalizeUTC(input.value);
+      if (!normalized) {
+        output.textContent = 'Enter a UTC time to convert.';
+        return;
+      }
+      const date = new Date(normalized);
+      if (Number.isNaN(date.getTime())) {
+        output.textContent = 'Invalid timestamp.';
+        return;
+      }
+      localStorage.setItem('utc-input', input.value);
+      output.textContent = `${date.toLocaleString(undefined, { hour12: false })} · ${Intl.DateTimeFormat().resolvedOptions().timeZone}`;
+    }
+
+    function fillCurrentUTC() {
+      const input = document.getElementById('utc-input');
+      if (!input) return;
+      const now = new Date();
+      const utc = new Date(now.getTime() + now.getTimezoneOffset() * 60000);
+      const iso = utc.toISOString().slice(0, 16).replace('T', ' ');
+      input.value = iso;
+      convertUTC();
     }
 
     document.querySelectorAll('.pill').forEach(btn => {

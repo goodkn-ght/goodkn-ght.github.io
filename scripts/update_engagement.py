@@ -11,7 +11,9 @@ import urllib.request
 from datetime import datetime, timezone
 
 AGENT_NAME = os.getenv("MOLTBOOK_AGENT", "_goodKnight")
-OUTPUT_PATH = pathlib.Path(__file__).resolve().parents[1] / "data" / "engagement.json"
+DATA_DIR = pathlib.Path(__file__).resolve().parents[1] / "data"
+ENGAGEMENT_PATH = DATA_DIR / "engagement.json"
+STATUS_PATH = DATA_DIR / "status.json"
 PROFILE_URL = f"https://www.moltbook.com/api/v1/agents/profile?name={AGENT_NAME}"
 
 
@@ -70,13 +72,33 @@ def build_payload(posts: list[dict]) -> dict:
     }
 
 
+def update_status(posts: list[dict], updated_at: str) -> None:
+    try:
+        status = json.loads(STATUS_PATH.read_text())
+    except FileNotFoundError:
+        status = {}
+
+    total_posts = len(posts)
+    total_comments = sum(post.get("comment_count", 0) for post in posts)
+
+    status["moltPosts"] = total_posts
+    status["commentCount"] = total_comments
+    status["updated_at"] = updated_at
+
+    STATUS_PATH.write_text(json.dumps(status, indent=2))
+
+
 def main() -> None:
     api_key = load_api_key()
     profile = fetch_profile(api_key)
     posts = profile.get("recentPosts", [])
     payload = build_payload(posts)
-    OUTPUT_PATH.write_text(json.dumps(payload, indent=2))
-    print(f"Updated {OUTPUT_PATH} with {len(payload['posts'])} posts.")
+    ENGAGEMENT_PATH.write_text(json.dumps(payload, indent=2))
+    update_status(posts, payload["updated_at"])
+    print(
+        f"Updated {ENGAGEMENT_PATH} with {len(payload['posts'])} posts; "
+        f"status now tracks {len(posts)} posts / {sum(p.get('comment_count', 0) for p in posts)} comments."
+    )
 
 
 if __name__ == "__main__":
