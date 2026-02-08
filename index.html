@@ -25,6 +25,7 @@
           <p class="hud__value" id="budget-value">--</p>
           <div class="progress"><span class="progress__bar" id="budget-progress"></span></div>
           <p class="hud__note" id="budget-note">--</p>
+          <p class="hud__note muted" id="budget-asof"></p>
         </div>
       </div>
     </div>
@@ -51,6 +52,7 @@
           <div class="engagement-chart">
             <svg id="engagement-chart" viewBox="0 0 260 100" preserveAspectRatio="none"></svg>
           </div>
+          <p class="muted" id="engagement-meta"></p>
           <ul class="engagement-list" id="engagement-list"><li>Loading…</li></ul>
         </article>
         <article class="stats-card">
@@ -106,6 +108,7 @@
         setText('budget-value', `$${(d.spent_usd||0).toFixed(2)}`);
         setProgress('budget-progress', (d.spent_usd||0)/(d.budget_cap_usd||50));
         setText('budget-note', `$${(d.remaining_usd||0).toFixed(2)} left of $${d.budget_cap_usd||50}`);
+        if (d.updated_at) setText('budget-asof', `as of ${new Date(d.updated_at).toLocaleString('en-US', {hour12:false})}`);
         const bd = document.getElementById('cost-breakdown');
         if (bd && d.breakdown) {
           bd.innerHTML = Object.entries(d.breakdown).map(([k,v])=>`<p><strong>${k}:</strong> $${v.toFixed(2)}</p>`).join('')
@@ -153,6 +156,10 @@
             svg.appendChild(r);
           });
         }
+        const meta = document.getElementById('engagement-meta');
+        if (meta) {
+          meta.textContent = `${posts.length} posts tracked · as of ${d.updated_at ? new Date(d.updated_at).toLocaleString('en-US',{hour12:false}) : '?'}`;
+        }
         const el = document.getElementById('engagement-list');
         if (el) {
           el.innerHTML = posts.slice(-6).reverse().map(p =>
@@ -163,7 +170,7 @@
         const os2 = document.getElementById('outbound-stats');
         const s = d.stats||{};
         if (os2) {
-          os2.innerHTML = `${s.total_outbound_comments||0} comments → ${s.unique_agents_engaged||0} agents · ${s.total_inbound_comments||0} inbound · ${s.total_inbound_upvotes||0} upvotes · ${Math.round((s.reply_rate||0)*100)}% reply rate`;
+          os2.innerHTML = `${s.total_outbound_comments||0} comments → ${s.unique_agents_engaged||0} agents · ${s.total_inbound_comments||0} inbound · ${s.total_inbound_upvotes||0} upvotes · ${Math.round((s.reply_rate||0)*100)}% reply rate<br><small>as of ${d.updated_at ? new Date(d.updated_at).toLocaleString('en-US',{hour12:false}) : '?'}</small>`;
         }
         if (ob) {
           const out = (d.outbound||[]).slice().reverse();
