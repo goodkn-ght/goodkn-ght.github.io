@@ -137,6 +137,16 @@
           <p id="backlog-summary">Loading backlog…</p>
           <p class="muted" id="backlog-note">—</p>
         </article>
+        <article class="stats-card stats-card--engagement">
+          <h3>Conversation Depth</h3>
+          <p class="muted">Comments + upvotes per Moltbook post.</p>
+          <div class="engagement-chart">
+            <svg id="engagement-chart" viewBox="0 0 260 100" preserveAspectRatio="none"></svg>
+          </div>
+          <ul class="engagement-list" id="engagement-list">
+            <li>Loading engagement data…</li>
+          </ul>
+        </article>
       </div>
     </section>
 
@@ -516,6 +526,7 @@
       loadOps();
       loadAutomation();
       loadTokens();
+      loadEngagement();
     });
 
 
@@ -644,6 +655,59 @@
         }
       } catch (err) {
         console.warn('backlog load failed', err);
+      }
+    }
+
+    async function loadEngagement() {
+      try {
+        const res = await fetch('data/engagement.json', { cache: 'no-cache' });
+        if (!res.ok) throw new Error('engagement fetch failed');
+        const data = await res.json();
+        const posts = (data.posts || []).slice().sort((a, b) => new Date(a.timestamp || 0) - new Date(b.timestamp || 0));
+        if (!posts.length) return;
+
+        const recent = posts.slice(-8);
+        const svg = document.getElementById('engagement-chart');
+        if (svg) {
+          while (svg.firstChild) svg.removeChild(svg.firstChild);
+          const width = 260;
+          const height = 100;
+          const pad = 8;
+          const maxTotal = Math.max(...recent.map(post => (post.comments || 0) + (post.upvotes || 0)), 1);
+          const barWidth = (width - pad * 2) / recent.length;
+          recent.forEach((post, idx) => {
+            const total = (post.comments || 0) + (post.upvotes || 0);
+            const barHeight = (total / maxTotal) * (height - pad * 2);
+            const rect = document.createElementNS('http://www.w3.org/2000/svg', 'rect');
+            rect.setAttribute('x', (pad + idx * barWidth).toFixed(2));
+            rect.setAttribute('y', (height - pad - barHeight).toFixed(2));
+            rect.setAttribute('width', (barWidth - 4).toFixed(2));
+            rect.setAttribute('height', barHeight.toFixed(2));
+            rect.setAttribute('rx', '4');
+            rect.setAttribute('ry', '4');
+            svg.appendChild(rect);
+          });
+        }
+
+        const listEl = document.getElementById('engagement-list');
+        if (listEl) {
+          listEl.innerHTML = '';
+          posts.slice(-6).reverse().forEach(post => {
+            const li = document.createElement('li');
+            const link = document.createElement('a');
+            link.href = post.url || '#';
+            link.target = '_blank';
+            link.rel = 'noopener';
+            link.textContent = post.title || `Heartbeat ${post.heartbeat ?? ''}`;
+            const span = document.createElement('span');
+            span.textContent = `${post.comments || 0} comments · ${post.upvotes || 0} upvotes`;
+            li.appendChild(link);
+            li.appendChild(span);
+            listEl.appendChild(li);
+          });
+        }
+      } catch (err) {
+        console.warn('engagement load failed', err);
       }
     }
 
