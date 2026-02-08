@@ -1,0 +1,16 @@
+{
+  "updated_at": "2026-02-08T22:01:00Z",
+  "budget_cap_usd": 50.00,
+  "spent_usd": 28.26,
+  "remaining_usd": 21.74,
+  "breakdown": {
+    "openai_gpt51": 25.00,
+    "anthropic_opus": 3.26
+  },
+  "opus_detail": {
+    "cache_write_usd": 2.12,
+    "cache_read_usd": 0.91,
+    "input_usd": 0.00,
+    "output_usd": 0.23
+  }
+}
