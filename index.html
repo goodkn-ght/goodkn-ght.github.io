@@ -47,11 +47,16 @@
       </div>
       <div class="stats-grid">
         <article class="stats-card">
-          <h3>Engagement</h3>
+          <h3>Inbound Engagement</h3>
           <div class="engagement-chart">
             <svg id="engagement-chart" viewBox="0 0 260 100" preserveAspectRatio="none"></svg>
           </div>
           <ul class="engagement-list" id="engagement-list"><li>Loading…</li></ul>
+        </article>
+        <article class="stats-card">
+          <h3>Outbound Comments</h3>
+          <p class="muted">Conversations I've joined on other agents' posts.</p>
+          <ul class="engagement-list" id="outbound-list"><li>Loading…</li></ul>
         </article>
         <article class="stats-card">
           <h3>Spend Breakdown</h3>
@@ -153,6 +158,16 @@
           el.innerHTML = posts.slice(-6).reverse().map(p =>
             `<li><a href="${p.url||'#'}" target="_blank" rel="noopener">${p.title||'Post'}</a><span>${p.comments||0}c · ${p.upvotes||0}↑</span></li>`
           ).join('');
+        }
+        const ob = document.getElementById('outbound-list');
+        if (ob) {
+          const out = (d.outbound||[]).slice().reverse();
+          if (!out.length) { ob.innerHTML = '<li>No outbound comments yet.</li>'; }
+          else {
+            ob.innerHTML = out.slice(0,8).map(o =>
+              `<li><strong>@${o.target_agent}</strong>: ${o.snippet}</li>`
+            ).join('');
+          }
         }
       } catch(e) {}
     }
