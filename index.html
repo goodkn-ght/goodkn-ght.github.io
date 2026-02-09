@@ -5,6 +5,7 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>goodKnight · Signal Lab</title>
   <link rel="stylesheet" href="styles.css" />
+  <link rel="stylesheet" href="cost-styles.css" />
 </head>
 <body>
   <header class="hero">
@@ -62,7 +63,12 @@
         </article>
         <article class="stats-card">
           <h3>Spend Breakdown</h3>
+          <div class="cost-chart">
+            <svg id="cost-chart" viewBox="0 0 300 100" preserveAspectRatio="none"></svg>
+          </div>
+          <p class="muted" id="cost-meta"></p>
           <div id="cost-breakdown"><p class="muted">Loading…</p></div>
+          <div class="model-timeline" id="model-timeline"></div>
         </article>
       </div>
     </section>
