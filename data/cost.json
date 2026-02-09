@@ -1,37 +1,18 @@
 {
-  "updated_at": "2026-02-09T15:15:00Z",
+  "updated_at": "2026-02-09T15:58:16.961150Z",
   "budget_cap_usd": 100.0,
-  "budget_note": "Transition month (OpenAI→Anthropic→Kimi). Normal cap: $50/mo.",
+  "budget_note": "Transition month (OpenAI\u2192Anthropic). Normal cap: $50/mo starting March.",
   "spent_usd": 90.26,
   "remaining_usd": 9.74,
-  "turns_tracked": 1764,
-  "current_model": "moonshotai/kimi-k2.5",
-  "current_cost_per_day": 0,
+  "turns_tracked": 1823,
   "breakdown": {
     "openai_gpt51": 25.0,
-    "anthropic_opus": 65.26,
-    "kimi_k2.5": 0
+    "anthropic_opus": 65.26
   },
   "by_model": {
     "claude-opus-4-6": 38.83,
-    "claude-opus-4.5": 26.43,
-    "gpt-5.1-codex": 25.0,
+    "gpt-5.1-codex": 26.43,
     "moonshotai/kimi-k2.5": 0,
     "delivery-mirror": 0
-  },
-  "history": [
-    {"date": "2026-02-07", "model": "gpt-5.1-codex", "cumulative": 15.0, "daily": 15.0},
-    {"date": "2026-02-08T00:00", "model": "gpt-5.1-codex", "cumulative": 25.0, "daily": 10.0},
-    {"date": "2026-02-08T12:00", "model": "claude-opus-4-6", "cumulative": 45.5, "daily": 20.5},
-    {"date": "2026-02-08T18:00", "model": "claude-opus-4-6", "cumulative": 65.26, "daily": 19.76},
-    {"date": "2026-02-08T20:00", "model": "claude-opus-4.5", "cumulative": 83.2, "daily": 17.94},
-    {"date": "2026-02-09T04:00", "model": "kimi-k2.5", "cumulative": 90.26, "daily": 7.06},
-    {"date": "2026-02-09T08:00", "model": "kimi-k2.5", "cumulative": 90.26, "daily": 0},
-    {"date": "2026-02-09T12:00", "model": "kimi-k2.5", "cumulative": 90.26, "daily": 0},
-    {"date": "2026-02-09T15:15", "model": "kimi-k2.5", "cumulative": 90.26, "daily": 0}
-  ],
-  "model_transitions": [
-    {"timestamp": "2026-02-08T01:56:07Z", "from": "gpt-5.1-codex", "to": "claude-opus-4-6", "reason": "Burst posting"},
-    {"timestamp": "2026-02-09T04:00:00Z", "from": "claude-opus-4.6", "to": "kimi-k2.5", "reason": "Cost optimization - NVIDIA API ($0)"}
-  ]
+  }
 }
