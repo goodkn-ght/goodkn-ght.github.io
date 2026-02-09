@@ -193,3 +193,91 @@
 </body>
 </html>
 <!-- deploy: Mon Feb  9 04:37:42 AM UTC 2026 -->
+
+<!-- Cost Visualization Script -->
+<script>
+async function loadCostViz() {
+  try {
+    const d = await fetchJSON('data/cost.json');
+    if (!d) return;
+    
+    // Update breakdown boxes
+    const bd = document.getElementById('cost-breakdown');
+    if (bd && d.breakdown) {
+      let html = '<div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:1rem;margin-top:1rem;">';
+      html += Object.entries(d.breakdown).map(([k,v]) => {
+        const color = k.includes('kimi') ? '#00d4aa' : k.includes('anthropic') ? '#d97757' : '#10a37f';
+        return `<div style="padding:0.75rem;background:rgba(0,0,0,0.2);border-radius:6px;border-left:3px solid ${color}">
+          <div style="font-size:0.7rem;text-transform:uppercase;color:var(--muted);margin-bottom:0.25rem;">${k.replace(/_/g,' ')}</div>
+          <div style="font-size:1.25rem;font-weight:600;color:${color};">$${(v||0).toFixed(2)}</div>
+        </div>`;
+      }).join('');
+      html += '</div>';
+      bd.innerHTML = html;
+    }
+    
+    // Render sparkline
+    const svg = document.getElementById('cost-chart');
+    if (svg && d.history) {
+      const history = d.history;
+      const maxVal = Math.max(...history.map(h => h.cumulative || 0), 100);
+      const w = 300, h = 100, pad = 10;
+      
+      let path = `M${pad},${h-pad} `;
+      history.forEach((pt, i) => {
+        const x = pad + (i / (history.length - 1)) * (w - 2 * pad);
+        const y = h - pad - ((pt.cumulative || 0) / maxVal) * (h - 2 * pad);
+        path += i === 0 ? `L${x},${y} ` : `L${x},${y} `;
+      });
+      
+      path += `L${w-pad},${h-pad} Z`;
+      
+      const colors = {'gpt-5.1-codex':'#10a37f','claude-opus-4-6':'#d97757','kimi-k2.5':'#00d4aa'};
+      let html = '<defs><linearGradient id="cg" x1="0%" y1="0%" x2="0%" y2="100%"><stop offset="0%" stop-color="#8ea5ff" stop-opacity="0.3"/><stop offset="100%" stop-color="#8ea5ff" stop-opacity="0.05"/></linearGradient></defs>';
+      html += `<path d="${path}" fill="url(#cg)"/>`;
+      
+      history.forEach((pt, i) => {
+        const x = pad + (i / (history.length - 1)) * (w - 2 * pad);
+        const y = h - pad - ((pt.cumulative || 0) / maxVal) * (h - 2 * pad);
+        const c = colors[pt.model] || '#8ea5ff';
+        html += `<circle cx="${x}" cy="${y}" r="3" fill="${c}"/>`;
+      });
+      
+      const last = history[history.length-1];
+      if (last?.model?.includes('kimi')) {
+        html += `<text x="${w-50}" y="20" fill="#00d4aa" font-size="11" font-weight="600">$0/day ↓</text>`;
+      }
+      
+      svg.innerHTML = html;
+    }
+    
+    // Model timeline
+    const mt = document.getElementById('model-timeline');
+    if (mt && d.model_transitions) {
+      let html = '<div style="display:flex;gap:0.5rem;align-items:center;flex-wrap:wrap;margin-top:1rem;padding-top:0.75rem;border-top:1px solid rgba(255,255,255,0.1);">';
+      d.model_transitions.forEach(t => {
+        const d1 = new Date(t.timestamp).toLocaleDateString('en-US', {month:'short', day:'numeric'});
+        const fc = t.from.includes('gpt') ? '#10a37f' : t.from.includes('claude') ? '#d97757' : '#00d4aa';
+        const tc = t.to.includes('gpt') ? '#10a37f' : t.to.includes('claude') ? '#d97757' : '#00d4aa';
+        html += `<span style="padding:0.25rem 0.5rem;background:rgba(0,0,0,0.3);border-radius:4px;font-size:0.75rem;color:${fc};border:1px solid ${fc};">${t.from.split('-')[0]}</span>`;
+        html += '<span style="color:var(--muted);">→</span>';
+        html += `<span style="padding:0.25rem 0.5rem;background:rgba(0,0,0,0.3);border-radius:4px;font-size:0.75rem;color:${tc};border:1px solid ${tc};font-weight:600;">${t.to.split('/').pop().split('-')[0]}</span>`;
+        html += `<span style="color:var(--muted);font-size:0.65rem;">${d1}</span>`;
+      });
+      html += '</div>';
+      mt.innerHTML = html;
+    }
+    
+    // Meta text
+    const meta = document.getElementById('cost-meta');
+    if (meta) {
+      meta.innerHTML = `Current: <strong style="color:#00d4aa;">${d.current_model || 'unknown'}</strong> · ${d.history?.length || 0} data points`;
+    }
+  } catch(e) { console.error('Cost viz:', e); }
+}
+
+// Append to loadCost
+document.addEventListener('DOMContentLoaded', () => {
+  setTimeout(loadCostViz, 100);
+});
+</script>
