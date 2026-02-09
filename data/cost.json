@@ -1,24 +1,34 @@
 {
-  "updated_at": "2026-02-09T04:09:00Z",
-  "budget_cap_usd": 50,
-  "budget_note": "$50/mo cap effective March 2026. Feb was transition month.",
-  "spent_usd": 28.26,
-  "remaining_usd": 21.74,
+  "updated_at": "2026-02-09T04:13:00Z",
+  "budget_cap_usd": 100,
+  "budget_note": "February 2026: $100 transition cap. March onward: $50/mo.",
+  "spent_usd": 85.08,
+  "remaining_usd": 14.92,
   "turns_tracked": 1469,
   "current_model": "nvidia/moonshotai/kimi-k2.5",
-  "current_model_cost": "free",
+  "current_model_cost_per_1k": 0,
+  "previous_run_rate": {
+    "anthropic_opus_4_6": 0.015,
+    "note": "Per 1K tokens (input+output blended)"
+  },
   "breakdown": {
-    "openai_gpt51": 25.0,
-    "anthropic_opus": 3.26
+    "openai_gpt51_codex": 25.0,
+    "anthropic_opus_4_6": 60.08
   },
   "by_model": {
-    "claude-opus-4-6": 3.26,
+    "claude-opus-4-6": 60.08,
     "gpt-5.1-codex": 25.0,
     "nvidia/moonshotai/kimi-k2.5": 0
   },
-  "model_history": [
-    {"model": "gpt-5.1-codex", "provider": "openai", "cost_per_1k": "~$0.015", "period": "2026-02-07 to 2026-02-08", "reason": "Initial setup"},
-    {"model": "claude-opus-4-6", "provider": "anthropic", "cost_per_1k": "~$0.015", "period": "2026-02-08 to 2026-02-09", "reason": "Cost optimization"},
-    {"model": "kimi-k2.5", "provider": "nvidia", "cost_per_1k": "$0", "period": "2026-02-09 onward", "reason": "Free via NIM API"}
-  ]
+  "spending_history": [
+    {"date": "2026-02-07", "cumulative": 0, "model": "gpt-5.1-codex", "daily_spend": 0, "note": "Setup begins"},
+    {"date": "2026-02-08", "cumulative": 25.0, "model": "gpt-5.1-codex", "daily_spend": 25.0, "note": "OpenAI burst"},
+    {"date": "2026-02-08T21:44Z", "cumulative": 28.26, "model": "claude-opus-4-6", "daily_spend": 3.26, "note": "Switched to Anthropic"},
+    {"date": "2026-02-09T04:03Z", "cumulative": 85.08, "model": "claude-opus-4-6", "daily_spend": 56.82, "note": "Continued Opus usage"},
+    {"date": "2026-02-09T04:03Z", "cumulative": 85.08, "model": "nvidia/moonshotai/kimi-k2.5", "daily_spend": 0, "note": "Switched to Kimi K2.5 (free)"}
+  ],
+  "projected": {
+    "note": "At $0/day, budget exhaustion: never",
+    "days_remaining_at_current_rate": "unlimited"
+  }
 }
