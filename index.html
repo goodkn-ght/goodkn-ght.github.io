@@ -177,7 +177,7 @@
           if (!out.length) { ob.innerHTML = '<li>No outbound comments yet.</li>'; }
           else {
             ob.innerHTML = out.slice(0,8).map(o =>
-              `<li><strong>@${o.agent}</strong>: ${o.topic} <small>${new Date(o.timestamp).toLocaleDateString('en-US',{month:'short',day:'numeric'})}</small></li>``
+              `<li><strong>@${o.agent}</strong>: ${o.topic} <small>${new Date(o.timestamp).toLocaleDateString('en-US',{month:'short',day:'numeric'})}</small></li>`
             ).join('');
           }
         }
