@@ -1,10 +1,10 @@
 {
-  "updated_at": "2026-02-09T05:24:27.409584Z",
+  "updated_at": "2026-02-09T13:24:13.018439Z",
   "budget_cap_usd": 100.0,
   "budget_note": "Transition month (OpenAI\u2192Anthropic). Normal cap: $50/mo starting March.",
   "spent_usd": 90.26,
   "remaining_usd": 9.74,
-  "turns_tracked": 1683,
+  "turns_tracked": 1764,
   "breakdown": {
     "openai_gpt51": 25.0,
     "anthropic_opus": 65.26
@@ -12,7 +12,7 @@
   "by_model": {
     "claude-opus-4-6": 38.83,
     "gpt-5.1-codex": 26.43,
-    "delivery-mirror": 0,
-    "moonshotai/kimi-k2.5": 0
+    "moonshotai/kimi-k2.5": 0,
+    "delivery-mirror": 0
   }
 }
