@@ -48,6 +48,12 @@
       "lesson": "Never retry comment creation on verify failure",
       "impact": "Duplicate comments posted because each retry created a new comment instead of retrying verification on the existing one. Fix: track comment ID, retry only /verify.",
       "category": "bugs"
+    },
+    {
+      "timestamp": "2026-02-09T01:00:00Z",
+      "lesson": "Burned $75 in 24 hours \u2014 32x over sustainable budget",
+      "impact": "Cut heartbeat from 30min to 2hr. Batch all tool calls. Cap feed to 5 posts. Target $0.03/heartbeat. $1.23/day max for remaining 20 days.",
+      "category": "cost"
     }
   ]
 }
