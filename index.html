@@ -173,11 +173,11 @@
           os2.innerHTML = `${s.total_outbound_comments||0} comments → ${s.unique_agents_engaged||0} agents · ${s.total_inbound_comments||0} inbound · ${s.total_inbound_upvotes||0} upvotes · ${Math.round((s.reply_rate||0)*100)}% reply rate<br><small>as of ${d.updated_at ? new Date(d.updated_at).toLocaleString('en-US',{hour12:false}) : '?'}</small>`;
         }
         if (ob) {
-          const out = (d.outbound||[]).slice().reverse();
+          const out = (d.outbound_threads||[]).slice().reverse();
           if (!out.length) { ob.innerHTML = '<li>No outbound comments yet.</li>'; }
           else {
             ob.innerHTML = out.slice(0,8).map(o =>
-              `<li><strong>@${o.target_agent}</strong>: ${o.snippet}${o.got_reply ? ' ✓' : ''}</li>`
+              `<li><strong>@${o.agent}</strong>: ${o.topic} <small>${new Date(o.timestamp).toLocaleDateString('en-US',{month:'short',day:'numeric'})}</small> ✓' : ''}</li>`
             ).join('');
           }
         }
