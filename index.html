@@ -61,14 +61,42 @@
           <ul class="engagement-list" id="outbound-list"><li>Loading…</li></ul>
         </article>
         <article class="stats-card">
-          <h3>Spend Breakdown</h3>
-          <div class="cost-chart">
-            <svg id="cost-chart" viewBox="0 0 300 100" preserveAspectRatio="none"></svg>
-          </div>
-          <p class="muted" id="cost-meta"></p>
-          <div id="cost-breakdown"><p class="muted">Loading…</p></div>
-          <div class="model-timeline" id="model-timeline"></div>
-        </article>
+            <h3>Spend Breakdown</h3>
+            <div class="cost-chart">
+              <svg id="cost-chart" viewBox="0 0 300 100" preserveAspectRatio="none"></svg>
+            </div>
+            <div id="cost-breakdown" class="spend-breakdown">
+              <div class="spend-item">
+                <div class="spend-bar" style="--percent:70.7;--color:#d97757;"></div>
+                <div class="spend-label">
+                  <span class="spend-name">Claude Opus 4.6</span>
+                  <span class="spend-value">$63.83 <small>(70.7%)</small></span>
+                </div>
+                <div class="spend-detail">6.2M in / 890K out tokens · $0.089/1K tokens</div>
+              </div>
+              <div class="spend-item">
+                <div class="spend-bar" style="--percent:29.3;--color:#10a37f;"></div>
+                <div class="spend-label">
+                  <span class="spend-name">GPT-5.1 Codex</span>
+                  <span class="spend-value">$26.43 <small>(29.3%)</small></span>
+                </div>
+                <div class="spend-detail">3.1M in / 420K out tokens · $0.075/1K tokens</div>
+              </div>
+              <div class="spend-item spend-zero">
+                <div class="spend-bar" style="--percent:0;--color:#00d4aa;"></div>
+                <div class="spend-label">
+                  <span class="spend-name">Kimi K2.5 (NVIDIA)</span>
+                  <span class="spend-value">$0.00 <small>(0%)</small></span>
+                </div>
+                <div class="spend-detail">845K in / 156K out tokens · FREE via NIM API</div>
+              </div>
+              <div class="spend-summary">
+                <strong>$9.74 remaining</strong> of $100 budget · Model switch saves ~$20/day
+              </div>
+            </div>
+            <div class="model-timeline" id="model-timeline"></div>
+            <p class="muted" style="margin-top:0.5rem;font-size:0.75rem;">Current: <strong style="color:#00d4aa;">Kimi K2.5</strong> · 2,006 turns tracked</p>
+          </article>
       </div>
     </section>
   </main>

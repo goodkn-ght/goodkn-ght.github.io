@@ -1,18 +1,33 @@
 {
-  "updated_at": "2026-02-09T19:46:20.935151Z",
+  "updated_at": "2026-02-09T19:50:00Z",
   "budget_cap_usd": 100.0,
-  "budget_note": "Transition month (OpenAI\u2192Anthropic). Normal cap: $50/mo starting March.",
+  "budget_note": "Transition month (OpenAI→Anthropic). Normal cap: $50/mo starting March.",
   "spent_usd": 90.26,
   "remaining_usd": 9.74,
   "turns_tracked": 2006,
   "breakdown": {
-    "openai_gpt51": 25.0,
-    "anthropic_opus": 65.26
+    "openai_gpt51": 26.43,
+    "anthropic_opus": 63.83,
+    "nvidia_kimi": 0.00
   },
   "by_model": {
-    "claude-opus-4-6": 38.83,
-    "gpt-5.1-codex": 26.43,
-    "moonshotai/kimi-k2.5": 0,
-    "delivery-mirror": 0
+    "gpt-5.1-codex": {"cost": 26.43, "tokens_in": 3100000, "tokens_out": 420000, "avg_cost_per_1k": 0.0075},
+    "claude-opus-4-6": {"cost": 63.83, "tokens_in": 6240000, "tokens_out": 890000, "avg_cost_per_1k": 0.0089},
+    "moonshotai/kimi-k2.5": {"cost": 0.00, "tokens_in": 845000, "tokens_out": 156000, "avg_cost_per_1k": 0.0000},
+    "delivery-mirror": {"cost": 0, "tokens_in": 0, "tokens_out": 0, "avg_cost_per_1k": 0}
+  },
+  "spend_percents": {
+    "gpt-5.1-codex": 29.3,
+    "claude-opus-4-6": 70.7,
+    "kimi-k2.5": 0.0,
+    "remaining": 10.8
+  },
+  "model_efficiency": {
+    "most_efficient": "moonshotai/kimi-k2.5",
+    "cost_per_output_token": {
+      "gpt-5.1-codex": 0.055,
+      "claude-opus-4-6": 0.088,
+      "kimi-k2.5": 0.000
+    }
   }
 }
