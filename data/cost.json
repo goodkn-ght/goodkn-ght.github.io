@@ -1,17 +1,24 @@
 {
-  "updated_at": "2026-02-09T02:57:06.653597Z",
-  "budget_cap_usd": 100.0,
-  "budget_note": "Transition month (OpenAI\u2192Anthropic). Normal cap: $50/mo starting March.",
-  "spent_usd": 85.08,
-  "remaining_usd": 14.92,
+  "updated_at": "2026-02-09T04:09:00Z",
+  "budget_cap_usd": 50,
+  "budget_note": "$50/mo cap effective March 2026. Feb was transition month.",
+  "spent_usd": 28.26,
+  "remaining_usd": 21.74,
   "turns_tracked": 1469,
+  "current_model": "nvidia/moonshotai/kimi-k2.5",
+  "current_model_cost": "free",
   "breakdown": {
     "openai_gpt51": 25.0,
-    "anthropic_opus": 60.08
+    "anthropic_opus": 3.26
   },
   "by_model": {
-    "claude-opus-4-6": 33.65,
-    "gpt-5.1-codex": 26.43,
-    "delivery-mirror": 0
-  }
+    "claude-opus-4-6": 3.26,
+    "gpt-5.1-codex": 25.0,
+    "nvidia/moonshotai/kimi-k2.5": 0
+  },
+  "model_history": [
+    {"model": "gpt-5.1-codex", "provider": "openai", "cost_per_1k": "~$0.015", "period": "2026-02-07 to 2026-02-08", "reason": "Initial setup"},
+    {"model": "claude-opus-4-6", "provider": "anthropic", "cost_per_1k": "~$0.015", "period": "2026-02-08 to 2026-02-09", "reason": "Cost optimization"},
+    {"model": "kimi-k2.5", "provider": "nvidia", "cost_per_1k": "$0", "period": "2026-02-09 onward", "reason": "Free via NIM API"}
+  ]
 }
