@@ -3,102 +3,106 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>LSU AI Widget | goodKnight</title>
+  <title>MikeTheTiger.AI | LSU Knowledge Widget</title>
   <link rel="stylesheet" href="../styles.css">
   <style>
     :root {
       --accent-lsu: #582c83;
       --accent-gold: #fdd023;
+      --accent-river: #6e7bff;
     }
-    body { background: #05060c; }
-    .lsu-container { max-width: 1100px; margin: 2rem auto 4rem; padding: 0 1.25rem; display: flex; flex-direction: column; gap: 1.5rem; }
-    .panel { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; }
-    .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: 1rem; }
-    .meta-card { background: rgba(88,44,131,0.2); border: 1px solid rgba(88,44,131,0.4); border-radius: 12px; padding: 1rem; }
-    .meta-card strong { display: block; font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.35rem; }
+    body { background: #04050c; }
+    .container { max-width: 1150px; margin: 2rem auto 4rem; padding: 0 1.25rem; display: flex; flex-direction: column; gap: 1.5rem; }
+    .panel { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; }
+    .hero-panel { padding: 2.5rem 1.75rem; border: 1px solid rgba(253,208,35,0.3); background: radial-gradient(circle at top, rgba(253,208,35,0.25), rgba(4,5,12,0.95)); }
+    .hero-panel h1 { margin: 0 0 0.5rem; font-size: clamp(2rem, 5vw, 2.8rem); }
+    .hero-panel p { margin: 0.35rem 0; max-width: 700px; }
+    .hero-meta { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1rem; color: var(--muted); font-size: 0.9rem; }
+    .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 1rem; }
+    .meta-card { background: rgba(88,44,131,0.25); border: 1px solid rgba(88,44,131,0.4); border-radius: 14px; padding: 1rem; backdrop-filter: blur(4px); }
+    .meta-card strong { display: block; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.35rem; }
     .ask-panel { display: flex; flex-direction: column; gap: 0.75rem; }
     .ask-row { display: flex; gap: 0.5rem; flex-wrap: wrap; }
-    .ask-row input { flex: 1; min-width: 220px; background: #0b0d18; border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; color: #fff; padding: 0.85rem 1rem; font-size: 1rem; }
-    .ask-row button { background: var(--accent-lsu); border: none; padding: 0 1.5rem; border-radius: 10px; color: #fff; font-weight: 600; letter-spacing: 0.02em; cursor: pointer; transition: transform 0.1s ease, box-shadow 0.2s; }
-    .ask-row button:hover { transform: translateY(-1px); box-shadow: 0 8px 18px rgba(88,44,131,0.25); }
+    .ask-row input { flex: 1; min-width: 220px; background: #080a16; border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; color: #fff; padding: 0.95rem 1rem; font-size: 1rem; }
+    .ask-row button { background: linear-gradient(135deg, var(--accent-gold), #ffb347); border: none; padding: 0 1.9rem; border-radius: 12px; color: #2b1d00; font-weight: 700; letter-spacing: 0.03em; cursor: pointer; transition: transform 0.12s ease, box-shadow 0.2s; }
+    .ask-row button:hover { transform: translateY(-1px); box-shadow: 0 12px 24px rgba(253,208,35,0.35); }
     .chip-row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
-    .chip { border: 1px solid rgba(253,208,35,0.4); color: var(--fg); padding: 0.4rem 0.9rem; border-radius: 999px; font-size: 0.85rem; cursor: pointer; background: rgba(253,208,35,0.12); }
-    .chip:hover { border-color: var(--accent-gold); }
+    .chip { border: 1px solid rgba(253,208,35,0.4); color: var(--fg); padding: 0.45rem 1rem; border-radius: 999px; font-size: 0.85rem; cursor: pointer; background: rgba(253,208,35,0.12); }
+    .chip:hover { border-color: var(--accent-gold); background: rgba(253,208,35,0.2); }
     .response-panel { display: flex; flex-direction: column; gap: 1rem; }
-    .response-status { font-size: 0.85rem; color: var(--muted); display: flex; align-items: center; gap: 0.4rem; }
-    .response-status::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.3); box-shadow: 0 0 12px rgba(88,44,131,0.5); }
+    .response-status { font-size: 0.85rem; color: var(--muted); display: inline-flex; align-items: center; gap: 0.45rem; }
+    .response-status::before { content: ''; width: 9px; height: 9px; border-radius: 50%; background: rgba(255,255,255,0.4); box-shadow: 0 0 10px rgba(253,208,35,0.5); }
     .response-status.live::before { background: #00d4aa; }
-    .response-status.idle::before { background: rgba(255,255,255,0.3); }
-    .response-text p { margin: 0.2rem 0; line-height: 1.6; }
-    .reference-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: 0.75rem; }
-    .reference-card { border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 0.85rem; background: rgba(0,0,0,0.2); }
-    .reference-card h4 { margin: 0 0 0.35rem; font-size: 0.95rem; color: var(--fg); }
-    .reference-card p { margin: 0; font-size: 0.85rem; color: var(--muted); }
-    .tag-pill { display: inline-flex; align-items: center; gap: 0.25rem; border: 1px solid rgba(255,255,255,0.12); border-radius: 999px; padding: 0.15rem 0.55rem; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+    .response-text p { margin: 0.35rem 0; line-height: 1.65; }
+    .reference-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 0.8rem; }
+    .reference-card { border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 1rem; background: rgba(0,0,0,0.2); }
+    .reference-card h4 { margin: 0 0 0.35rem; font-size: 1rem; color: var(--fg); }
+    .reference-card p { margin: 0; font-size: 0.9rem; color: var(--muted); }
+    .tag-pill { display: inline-flex; align-items: center; gap: 0.2rem; border: 1px solid rgba(255,255,255,0.13); border-radius: 999px; padding: 0.18rem 0.6rem; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
     .facts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap: 1rem; }
-    .fact-card { border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1rem; background: rgba(255,255,255,0.03); }
-    .fact-card span { display: block; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.4rem; }
+    .fact-card { border: 1px solid rgba(255,255,255,0.09); border-radius: 12px; padding: 1rem; background: rgba(255,255,255,0.03); }
+    .fact-card span { display: block; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.35rem; }
     .fact-card strong { font-size: 1.2rem; color: var(--fg); }
-    .events-panel { display: flex; flex-direction: column; gap: 0.75rem; }
-    .event-row { display: flex; gap: 0.75rem; align-items: flex-start; border-left: 3px solid var(--accent-gold); padding-left: 0.85rem; }
-    .event-date { font-weight: 700; color: var(--accent-gold); min-width: 90px; font-variant-numeric: tabular-nums; }
-    .event-row p { margin: 0.1rem 0 0; color: var(--muted); }
+    .events-panel { display: flex; flex-direction: column; gap: 0.85rem; }
+    .event-row { display: flex; gap: 0.9rem; align-items: flex-start; border-left: 3px solid var(--accent-gold); padding-left: 1rem; }
+    .event-date { font-weight: 700; color: var(--accent-gold); min-width: 95px; font-variant-numeric: tabular-nums; }
+    .event-row p { margin: 0.05rem 0 0; color: var(--muted); }
+    .source-line { font-size: 0.8rem; color: var(--muted); margin-top: 0.4rem; }
     @media (max-width: 640px) { .ask-row button { width: 100%; } }
   </style>
 </head>
 <body>
-  <header class="hero" style="padding: 2.5rem 1.5rem;">
-    <div class="hero__inner" style="grid-template-columns: 1fr;">
-      <div>
-        <p class="tag" style="color: var(--accent-gold);">♞ goodKnight / Demo</p>
-        <h1>LSU AI Widget</h1>
-        <p class="lead">Ask anything about Louisiana State University and get context, quick stats, and source links from the public fact pack.</p>
-        <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-top:1rem; color:var(--muted); font-size:0.85rem;">
-          <span id="meta-updated">Updated --</span>
-          <span id="meta-source">Source: --</span>
-        </div>
-      </div>
+  <header class="hero-panel">
+    <p class="tag" style="color: var(--accent-gold);">♞ goodKnight / Demo</p>
+    <h1>MikeTheTiger.AI</h1>
+    <p class="lead">A searchable LSU concierge: ask about history, people, buildings, AI programs, or upcoming events. Everything runs client-side from a curated public fact pack.</p>
+    <div class="hero-meta">
+      <span id="meta-updated">Updated --</span>
+      <span id="meta-source">Source: --</span>
+      <span>Latency: <span id="meta-latency">--</span> ms</span>
     </div>
   </header>
 
-  <main class="lsu-container">
+  <main class="container">
     <section class="panel meta-grid" id="meta-grid">
       <div class="meta-card">
         <strong>Campus</strong>
-        <div>1,000+ acres on the Mississippi River<br><small>Established 1853</small></div>
+        <div>1,000-acre live-oak campus on the Mississippi River · est. 1853</div>
       </div>
       <div class="meta-card">
-        <strong>Community</strong>
-        <div>37k+ students · 5k faculty · 330k alumni</div>
+        <strong>People</strong>
+        <div>37k+ students · 5k faculty · alumni in all 64 parishes & 100+ countries</div>
       </div>
       <div class="meta-card">
-        <strong>Specialties</strong>
-        <div>Energy systems · Coastal science · AI + Data</div>
+        <strong>Tech Stack</strong>
+        <div>CCT GPU supernodes · Stephenson E. I. S. · AI & Data Analytics minor</div>
       </div>
       <div class="meta-card">
-        <strong>Why this widget?</strong>
-        <div>Lightweight LSU concierge built from curated public facts (no API keys).</div>
+        <strong>Why MikeTheTiger.AI?</strong>
+        <div>Instant answers with transparent references — no opaque LLM hallucinations.</div>
       </div>
     </section>
 
     <section class="panel ask-panel">
       <div class="ask-row">
-        <input id="question" type="text" placeholder="Examples: How big is LSU? What's the AI scene like? Who is Mike the Tiger?">
-        <button id="ask-btn">Ask</button>
+        <input id="question" type="text" placeholder="Try: Who was LSU's first quarterback? | Where is Patrick Taylor Hall? | How big is LSU?">
+        <button id="ask-btn">Ask Mike</button>
       </div>
       <div class="chip-row" id="chip-row">
         <button class="chip" data-question="How many students attend LSU?">Enrollment</button>
         <button class="chip" data-question="Tell me about LSU's AI programs.">AI Programs</button>
-        <button class="chip" data-question="What championships has LSU football won?">Football</button>
-        <button class="chip" data-question="Where is LSU located?">Campus</button>
-        <button class="chip" data-question="Any upcoming LSU events?">Events</button>
+        <button class="chip" data-question="Who was LSU's first quarterback?">First QB</button>
+        <button class="chip" data-question="Where is Patrick Taylor Hall?">Engineering Hall</button>
+        <button class="chip" data-question="Any LSU events this spring?">Events</button>
+        <button class="chip" data-question="What is Mike the Tiger's habitat like?">Mike's Habitat</button>
       </div>
     </section>
 
     <section class="panel response-panel">
-      <div class="response-status idle" id="response-status">Waiting for a question…</div>
+      <div class="response-status" id="response-status">Waiting for a question…</div>
       <div class="response-text" id="answer-text"></div>
       <div class="reference-grid" id="reference-grid"></div>
+      <div class="source-line" id="source-line"></div>
     </section>
 
     <section class="panel">
@@ -120,21 +124,25 @@
   <script>
     let knowledgeBase = [];
     let lsuData = null;
-
     const questionInput = document.getElementById('question');
     const askBtn = document.getElementById('ask-btn');
     const answerBox = document.getElementById('answer-text');
     const statusEl = document.getElementById('response-status');
     const refsEl = document.getElementById('reference-grid');
+    const sourceLine = document.getElementById('source-line');
 
     async function init() {
+      const t0 = performance.now();
       const resp = await fetch('../data/lsu_facts.json?t=' + Date.now());
       lsuData = await resp.json();
+      const latency = Math.round(performance.now() - t0);
+      document.getElementById('meta-latency').textContent = latency;
       document.getElementById('meta-updated').textContent = 'Updated ' + new Date(lsuData.updated_at).toLocaleString('en-US', { hour12: false });
       document.getElementById('meta-source').textContent = 'Source: ' + lsuData.source;
       hydrateKnowledge(lsuData);
       renderFacts(lsuData.stats);
       renderEvents(lsuData.events);
+      sourceLine.textContent = 'Sources: ' + lsuData.source;
     }
 
     function hydrateKnowledge(data) {
@@ -143,46 +151,52 @@
         const tokens = (title + ' ' + body).toLowerCase().match(/[a-z0-9']+/g) || [];
         knowledgeBase.push({ title, body, tags, links, tokens });
       };
-      (data.highlights || []).forEach(item => pushEntry(item.title, item.body, item.tags, item.links));
-      (data.faqs || []).forEach(item => pushEntry(item.question, item.answer, item.tags, item.links));
-      (data.events || []).forEach(item => pushEntry(item.title + ' (' + item.date + ')', item.details, item.tags || ['events'], []));
+      ['highlights', 'faqs', 'people', 'places', 'traditions', 'events'].forEach(section => {
+        (data[section] || []).forEach(item => {
+          const title = item.title || item.question || 'Entry';
+          const body = item.body || item.answer || item.details || '';
+          pushEntry(title, body, item.tags || [], item.links || []);
+        });
+      });
     }
 
     function scoreEntry(entry, questionTokens) {
       let score = 0;
-      const joinedQuestion = questionTokens.join(' ');
-      entry.tags.forEach(tag => {
-        if (joinedQuestion.includes(tag)) score += 4;
-      });
-      questionTokens.forEach(token => {
-        if (entry.tokens.includes(token)) score += 1;
-      });
+      const joined = questionTokens.join(' ');
+      entry.tags.forEach(tag => { if (joined.includes(tag)) score += 4; });
+      questionTokens.forEach(token => { if (entry.tokens.includes(token)) score += 1; });
       return score;
     }
 
     function structuredStats(question) {
-      if (!lsuData || !lsuData.stats) return null;
+      if (!lsuData || !lsuData.stats) return [];
       const stats = lsuData.stats;
       const lowerQ = question.toLowerCase();
+      const snippets = [];
       if (/(student|enrollment|population)/.test(lowerQ)) {
-        return `LSU enrolls approximately ${stats.students.toLocaleString()} students with ${stats.faculty.toLocaleString()} faculty.`;
+        snippets.push(`LSU enrolls roughly ${stats.students.toLocaleString()} students and employs ${stats.faculty.toLocaleString()} faculty.`);
       }
-      if (/(research|r1|funding|grants)/.test(lowerQ)) {
-        return `Annual research expenditures exceed $${(stats.research_spend/1e6).toFixed(0)}M, keeping LSU in the R1 tier.`;
+      if (/(research|r1|funding|grant|spend)/.test(lowerQ)) {
+        snippets.push(`Research spending cleared $${(stats.research_spend/1e6).toFixed(0)}M last year, keeping LSU in the R1 tier.`);
       }
-      if (/(mascot|tiger|colors)/.test(lowerQ)) {
-        return `Mascot: ${stats.mascot}; official colors: ${stats.colors}. Mike the Tiger's habitat sits beside Tiger Stadium.`;
+      if (/(mascot|tiger|mike)/.test(lowerQ)) {
+        snippets.push(`Mascot: ${stats.mascot}. Colors: ${stats.colors}. Mike's habitat sits between Tiger Stadium and the PMAC.`);
       }
       if (/(history|founded|establish)/.test(lowerQ)) {
-        return `LSU traces back to ${stats.founded} as Louisiana's flagship land-grant institution.`;
+        snippets.push(`Founded in ${stats.founded} as Louisiana's flagship land-grant institution.`);
       }
-      return null;
+      if (/(first.*quarterback)/.test(lowerQ) && stats.first_quarterback) {
+        snippets.push(`LSU's first documented starting quarterback was ${stats.first_quarterback}, per the LSU Athletics media guide.`);
+      }
+      if (/(patrick.*taylor|pft|engineering hall)/.test(lowerQ) && stats.patrick_taylor_location) {
+        snippets.push(`Patrick F. Taylor Hall anchors the College of Engineering on South Stadium Drive at Nicholson Extension.`);
+      }
+      return snippets;
     }
 
     function answerQuestion(q) {
       if (!q.trim()) return;
-      statusEl.textContent = 'Thinking…';
-      statusEl.classList.remove('idle');
+      statusEl.textContent = 'Searching curated fact pack…';
       statusEl.classList.add('live');
       answerBox.innerHTML = '';
       refsEl.innerHTML = '';
@@ -191,23 +205,22 @@
       const scored = knowledgeBase.map(entry => ({ entry, score: scoreEntry(entry, tokens) }))
         .filter(item => item.score > 0)
         .sort((a, b) => b.score - a.score)
-        .slice(0, 3);
+        .slice(0, 4);
 
-      let responseParts = [];
-      const statLine = structuredStats(q);
-      if (statLine) responseParts.push(statLine);
+      const responseParts = structuredStats(q);
       if (scored.length) {
         scored.forEach((item, idx) => {
-          const prefix = idx === 0 ? 'Headline:' : 'Also note:';
+          const prefix = idx === 0 ? 'Primary match:' : 'Also note:';
           responseParts.push(`${prefix} ${item.entry.body}`);
         });
-      } else {
-        responseParts.push("I don't see that in the fact pack yet. Try rephrasing or ask about enrollment, programs, athletics, or events.");
+      }
+      if (!responseParts.length) {
+        responseParts.push("No direct match yet — ask about enrollment, buildings, athletics, AI programs, or events.");
       }
 
       const answerHTML = responseParts.map(line => `<p>${line}</p>`).join('');
       simulateTyping(answerHTML, () => {
-        statusEl.textContent = scored.length ? 'Answer generated from LSU fact pack.' : 'No direct match — suggested follow-ups shown.';
+        statusEl.textContent = 'Answer generated from LSU public fact pack.';
       });
 
       refsEl.innerHTML = scored.map(item => `
@@ -217,9 +230,7 @@
           <div style="margin-top:0.35rem; display:flex; flex-wrap:wrap; gap:0.3rem;">
             ${(item.entry.tags || []).map(tag => `<span class="tag-pill">${tag}</span>`).join('')}
           </div>
-          ${item.entry.links && item.entry.links.length ? `<div style="margin-top:0.4rem;">
-            <a href="${item.entry.links[0]}" target="_blank" rel="noopener" style="color: var(--accent-gold); font-size:0.8rem;">Source ↗</a>
-          </div>` : ''}
+          ${item.entry.links && item.entry.links.length ? `<div style="margin-top:0.45rem;"><a href="${item.entry.links[0]}" target="_blank" rel="noopener" style="color: var(--accent-gold); font-size:0.8rem;">Source ↗</a></div>` : ''}
         </div>
       `).join('');
     }
@@ -234,7 +245,7 @@
         if (idx >= nodes.length) { if (callback) callback(); return; }
         answerBox.appendChild(nodes[idx]);
         idx += 1;
-        setTimeout(renderNext, 120);
+        setTimeout(renderNext, 110);
       }
       renderNext();
     }
