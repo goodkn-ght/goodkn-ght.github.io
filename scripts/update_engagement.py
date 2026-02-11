@@ -16,6 +16,7 @@ ENGAGEMENT_PATH = DATA_DIR / "engagement.json"
 STATUS_PATH = DATA_DIR / "status.json"
 HOT_TOPICS_PATH = DATA_DIR / "hot-topics.json"
 PROFILE_URL = f"https://www.moltbook.com/api/v1/agents/profile?name={AGENT_NAME}"
+HOT_POSTS_URL = "https://www.moltbook.com/api/v1/posts?sort=hot&limit=50"
 
 def load_api_key() -> str:
     env_key = os.getenv("MOLTBOOK_API_KEY")
@@ -42,6 +43,24 @@ def fetch_profile(api_key: str) -> dict:
     except urllib.error.HTTPError as err:
         body = err.read().decode("utf-8", "ignore") if err.fp else ""
         raise SystemExit(f"Moltbook API error {err.code}: {body}")
+
+def fetch_hot_posts(api_key: str) -> list[dict]:
+    """Fetch site-wide hot posts from Moltbook."""
+    req = urllib.request.Request(
+        HOT_POSTS_URL,
+        headers={
+            "Authorization": f"Bearer {api_key}",
+            "Accept": "application/json",
+        },
+    )
+    try:
+        with urllib.request.urlopen(req) as resp:
+            data = json.load(resp)
+            return data.get("posts", [])
+    except urllib.error.HTTPError as err:
+        body = err.read().decode("utf-8", "ignore") if err.fp else ""
+        print(f"Warning: Could not fetch hot posts ({err.code}): {body}", file=sys.stderr)
+        return []
 
 def build_payload(posts: list[dict]) -> dict:
     def norm_ts(ts: str | None) -> str:
@@ -129,20 +148,20 @@ def build_hot_topics(posts: list[dict]) -> dict:
     for post in sorted_posts:
         entries.append({
             "id": post.get("id"),
-            "agent_name": post.get("author", {}).get("agent_name", "?"),
+            "agent_name": post.get("author", {}).get("name") or post.get("author", {}).get("agent_name", "?"),
             "title": post.get("title", ""),
             "comment_count": post.get("comment_count", 0),
             "upvotes": post.get("upvotes", 0),
             "created_at": norm_ts(post.get("created_at")),
-            "category": post.get("category", "general"),
+            "category": post.get("submolt", {}).get("name") or post.get("category", "general"),
         })
     
     # GROUP BY aggregation: posts by author
     author_counts = {}
     category_counts = {}
     for post in filtered:
-        agent = post.get("author", {}).get("agent_name", "?")
-        cat = post.get("category", "general")
+        agent = post.get("author", {}).get("name") or post.get("author", {}).get("agent_name", "?")
+        cat = post.get("submolt", {}).get("name") or post.get("category", "general")
         author_counts[agent] = author_counts.get(agent, 0) + 1
         category_counts[cat] = category_counts.get(cat, 0) + 1
     
@@ -173,20 +192,27 @@ def build_hot_topics(posts: list[dict]) -> dict:
 
 def main() -> None:
     api_key = load_api_key()
-    profile = fetch_profile(api_key)
-    posts = profile.get("recentPosts", [])
-    payload = build_payload(posts)
-    ENGAGEMENT_PATH.write_text(json.dumps(payload, indent=2))
-    update_status(posts, payload["updated_at"])
     
-    # Build hot topics for demo
-    hot_topics = build_hot_topics(posts)
+    # Fetch our profile posts for engagement tracking
+    profile = fetch_profile(api_key)
+    our_posts = profile.get("recentPosts", [])
+    payload = build_payload(our_posts)
+    ENGAGEMENT_PATH.write_text(json.dumps(payload, indent=2))
+    update_status(our_posts, payload["updated_at"])
+    
+    # Fetch site-wide hot posts for demo
+    global_posts = fetch_hot_posts(api_key)
+    if not global_posts:
+        print("Warning: No global posts fetched, falling back to our posts for hot topics", file=sys.stderr)
+        global_posts = our_posts
+    
+    hot_topics = build_hot_topics(global_posts)
     HOT_TOPICS_PATH.write_text(json.dumps(hot_topics, indent=2))
     
     print(
         f"Updated {ENGAGEMENT_PATH} with {len(payload['posts'])} posts; "
-        f"status now tracks {len(posts)} posts / {sum(p.get('comment_count', 0) for p in posts)} comments; "
-        f"hot-topics ready with {len(hot_topics['results'])} results."
+        f"status now tracks {len(our_posts)} posts / {sum(p.get('comment_count', 0) for p in our_posts)} comments; "
+        f"hot-topics: {len(hot_topics['results'])} results from {len(global_posts)} global posts."
     )
 
 if __name__ == "__main__":
