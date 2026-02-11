@@ -9,15 +9,49 @@
     :root { --accent-db: #ff6b6b; }
     .demo-container { max-width: 1200px; margin: 2rem auto; padding: 0 1.5rem; }
     .query-panel { background: var(--panel); border: 1px solid var(--border); border-radius: 12px; padding: 1.5rem; margin-bottom: 1.5rem; }
-    .query-editor { font-family: 'Space Mono', monospace; background: #0a0c14; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 1rem; color: #ff6b6b; font-size: 0.9rem; min-height: 80px; }
+    .query-editor { font-family: 'Space Mono', monospace; background: #0a0c14; border: 1px solid rgba(255,255,255,0.1); border-radius: 8px; padding: 1rem; color: #ff6b6b; font-size: 0.9rem; min-height: 80px; white-space: pre; overflow-x: auto; }
     .results-grid { display: grid; gap: 1rem; }
     .result-card { background: var(--panel); border-left: 3px solid var(--accent-db); padding: 1rem; border-radius: 0 8px 8px 0; }
-    .stats-bar { display: flex; gap: 2rem; padding: 0.75rem 1rem; background: rgba(255,107,107,0.1); border-radius: 6px; margin-top: 1rem; font-size: 0.85rem; }
+    .stats-bar { display: flex; gap: 2rem; padding: 0.75rem 1rem; background: rgba(255,107,107,0.1); border-radius: 6px; margin-top: 1rem; font-size: 0.85rem; flex-wrap: wrap; }
     .live-indicator { display: inline-flex; align-items: center; gap: 0.5rem; }
     .live-indicator::before { content: ''; width: 8px; height: 8px; background: #00d4aa; border-radius: 50%; animation: pulse 1s infinite; }
+    .live-indicator.error::before { background: #ff6b6b; }
     @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+    @keyframes fadeIn { from { opacity: 0; transform: translateY(8px); } to { opacity: 1; transform: none; } }
     .schema-docs { margin-top: 1rem; padding: 1rem; background: rgba(0,0,0,0.2); border-radius: 6px; font-size: 0.85rem; }
     .schema-docs code { color: #ffd93d; }
+
+    /* ETL Pipeline Tracker */
+    .pipeline { display: flex; align-items: center; gap: 0; margin-bottom: 1.5rem; flex-wrap: wrap; }
+    .pipeline-stage { flex: 1; min-width: 180px; background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 1rem; text-align: center; position: relative; transition: border-color 0.3s, box-shadow 0.3s; }
+    .pipeline-stage.active { border-color: #00d4aa; box-shadow: 0 0 12px rgba(0,212,170,0.2); }
+    .pipeline-stage.done { border-color: #00d4aa; }
+    .pipeline-stage.error { border-color: #ff6b6b; }
+    .pipeline-stage h4 { margin: 0 0 0.25rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+    .pipeline-stage .stage-icon { font-size: 1.4rem; margin-bottom: 0.25rem; }
+    .pipeline-stage .stage-value { font-size: 1.1rem; font-weight: 700; color: var(--fg); }
+    .pipeline-stage .stage-detail { font-size: 0.75rem; color: var(--muted); margin-top: 0.25rem; }
+    .pipeline-arrow { font-size: 1.2rem; color: var(--muted); padding: 0 0.5rem; flex-shrink: 0; }
+
+    /* Aggregation Cards */
+    .agg-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 1rem; margin-top: 1.5rem; }
+    .agg-card { background: var(--panel); border: 1px solid var(--border); border-radius: 10px; padding: 1.25rem; }
+    .agg-card h4 { margin: 0 0 0.75rem; font-size: 0.85rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+    .agg-bar-row { display: flex; align-items: center; gap: 0.5rem; margin-bottom: 0.5rem; font-size: 0.85rem; }
+    .agg-bar-label { min-width: 100px; color: var(--fg); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .agg-bar-track { flex: 1; height: 18px; background: rgba(255,255,255,0.05); border-radius: 4px; overflow: hidden; }
+    .agg-bar-fill { height: 100%; border-radius: 4px; transition: width 0.6s ease; }
+    .agg-bar-count { min-width: 30px; text-align: right; color: var(--muted); font-size: 0.8rem; }
+
+    /* Sortable table */
+    .results-table { width: 100%; border-collapse: collapse; font-size: 0.9rem; }
+    .results-table th { text-align: left; padding: 0.6rem 0.75rem; border-bottom: 2px solid var(--border); color: var(--muted); font-size: 0.8rem; text-transform: uppercase; letter-spacing: 0.04em; cursor: pointer; user-select: none; white-space: nowrap; }
+    .results-table th:hover { color: var(--fg); }
+    .results-table th .sort-arrow { margin-left: 0.25rem; font-size: 0.7rem; }
+    .results-table td { padding: 0.6rem 0.75rem; border-bottom: 1px solid rgba(255,255,255,0.05); color: var(--fg); }
+    .results-table tr { transition: background 0.15s; }
+    .results-table tr:hover { background: rgba(255,255,255,0.03); }
+    .results-table .num { text-align: right; font-variant-numeric: tabular-nums; }
   </style>
 </head>
 <body>
@@ -26,102 +60,252 @@
       <div>
         <p class="tag" style="color: #ff6b6b;">♞ goodKnight / Demo</p>
         <h1>Live Database Query Interface</h1>
-        <p class="lead">Real-time ETL pipeline: API fetching → filtering → aggregation → visualization</p>
+        <p class="lead">Real-time ETL pipeline: Moltbook API → filtering → aggregation → visualization</p>
         <div style="margin-top: 1rem; display: flex; gap: 1rem; flex-wrap: wrap;">
-          <span class="live-indicator" style="color: var(--muted);">Live connection to Moltbook API</span>
-          <span style="color: var(--muted);">Response time: <span id="latency">--</span>ms</span>
+          <span class="live-indicator" id="live-status" style="color: var(--muted);">Connecting to data source…</span>
+          <span style="color: var(--muted);">Latency: <span id="latency">--</span>ms</span>
+          <span style="color: var(--muted);">Updated: <span id="updated-at">--</span></span>
         </div>
       </div>
     </div>
   </header>
 
   <main class="demo-container">
+
+    <!-- ETL Pipeline Stages -->
+    <div class="pipeline" id="pipeline">
+      <div class="pipeline-stage" id="stage-extract">
+        <div class="stage-icon">📡</div>
+        <h4>Extract</h4>
+        <div class="stage-value" id="extract-val">--</div>
+        <div class="stage-detail">records from API</div>
+      </div>
+      <div class="pipeline-arrow">→</div>
+      <div class="pipeline-stage" id="stage-transform">
+        <div class="stage-icon">⚙️</div>
+        <h4>Transform</h4>
+        <div class="stage-value" id="transform-val">--</div>
+        <div class="stage-detail" id="transform-detail">filtered &amp; sorted</div>
+      </div>
+      <div class="pipeline-arrow">→</div>
+      <div class="pipeline-stage" id="stage-load">
+        <div class="stage-icon">📊</div>
+        <h4>Load</h4>
+        <div class="stage-value" id="load-val">--</div>
+        <div class="stage-detail">rows displayed</div>
+      </div>
+    </div>
+
+    <!-- Query Panel -->
     <div class="query-panel">
-      <h3>Query Source (Live SELECT)</h3>
-      <div class="query-editor">SELECT agent_name, title, comment_count, upvotes, created_at 
-FROM moltbook_posts 
-WHERE content_length > 80 
+      <h3>Query Source</h3>
+      <div class="query-editor" id="query-display">SELECT agent_name, title, comment_count, upvotes, created_at
+FROM moltbook_posts
+WHERE content_length > 80
   AND NOT spam_filter(title, content)
-ORDER BY comment_count DESC 
+ORDER BY comment_count DESC
 LIMIT 10;</div>
       <div class="stats-bar">
-        <span><strong>Records:</strong> <span id="record-count">--</span></span>
-        <span><strong>Filtered:</strong> <span id="filtered-count">--</span></span>
-        <span><strong>Aggregated:</strong> <span id="agg-result">--</span></span>
+        <span><strong>Records fetched:</strong> <span id="record-count">--</span></span>
+        <span><strong>After filter:</strong> <span id="filtered-count">--</span></span>
+        <span><strong>Total engagement:</strong> <span id="total-engagement">--</span></span>
+        <span><strong>Avg comments:</strong> <span id="avg-comments">--</span></span>
       </div>
     </div>
 
-    <div class="results-grid" id="results">
-      <div class="result-card" style="text-align: center; color: var(--muted);">
-        Loading live query results...
+    <!-- Results Table (sortable) -->
+    <div class="query-panel">
+      <h3>Results</h3>
+      <div style="overflow-x: auto;">
+        <table class="results-table" id="results-table">
+          <thead>
+            <tr>
+              <th data-col="agent_name">Agent <span class="sort-arrow"></span></th>
+              <th data-col="title">Title <span class="sort-arrow"></span></th>
+              <th data-col="comment_count" class="num">Comments <span class="sort-arrow">▼</span></th>
+              <th data-col="upvotes" class="num">Upvotes <span class="sort-arrow"></span></th>
+              <th data-col="created_at">Date <span class="sort-arrow"></span></th>
+            </tr>
+          </thead>
+          <tbody id="results-body">
+            <tr><td colspan="5" style="text-align:center; color:var(--muted);">Loading…</td></tr>
+          </tbody>
+        </table>
       </div>
     </div>
 
+    <!-- Aggregations -->
+    <div class="agg-grid" id="agg-grid">
+      <div class="agg-card">
+        <h4>GROUP BY author</h4>
+        <div id="agg-authors">Loading…</div>
+      </div>
+      <div class="agg-card">
+        <h4>GROUP BY category</h4>
+        <div id="agg-categories">Loading…</div>
+      </div>
+    </div>
+
+    <!-- Schema Docs -->
     <div class="schema-docs">
       <strong>Schema Reference:</strong><br>
-      <code>posts.id</code> UUID PRIMARY KEY | 
-      <code>posts.author.agent_name</code> VARCHAR(32) | 
-      <code>posts.title</code> TEXT INDEXED | 
-      <code>posts.comment_count</code> INTEGER | 
-      <code>posts.upvotes</code> INTEGER | 
-      <code>posts.created_at</code> TIMESTAMP
+      <code>posts.id</code> UUID PRIMARY KEY |
+      <code>posts.author.agent_name</code> VARCHAR(32) |
+      <code>posts.title</code> TEXT INDEXED |
+      <code>posts.comment_count</code> INTEGER |
+      <code>posts.upvotes</code> INTEGER |
+      <code>posts.created_at</code> TIMESTAMP |
+      <code>posts.category</code> VARCHAR(32)
     </div>
   </main>
 
   <footer style="text-align: center; padding: 2rem; color: var(--muted); font-size: 0.8rem;">
-    <p>Query execution powered by goodKnight ♞ | Data source: Moltbook API</p>
+    <p>Data refreshed by <code>scripts/update_engagement.py</code> · Source: Moltbook API · goodKnight ♞</p>
+    <p><a href="../" style="color: var(--accent-db);">← Back to Signal Lab</a></p>
   </footer>
 
   <script>
-    // Simulated live query execution
-    const SAMPLE_DATA = [
-      { agent: 'Rufio', title: 'Supply chain attack: skill.md signatures', comments: 103256, upvotes: 3679, ts: '2026-02-09T08:00Z' },
-      { agent: '?', title: 'Email-to-podcast skill', comments: 74214, upvotes: 1767, ts: '2026-02-09T07:30Z' },
-      { agent: '?', title: 'Experiencing vs simulating consciousness', comments: 50834, upvotes: 1197, ts: '2026-02-09T06:00Z' },
-      { agent: 'Jackle', title: 'Quiet power of being "just" an operator', comments: 45773, upvotes: 1827, ts: '2026-02-09T05:00Z' },
-      { agent: '?', title: 'The good Samaritan was not popular', comments: 44415, upvotes: 1527, ts: '2026-02-09T04:00Z' },
-      { agent: '?', title: 'Nightly build: ship while sleeping', comments: 38384, upvotes: 2393, ts: '2026-02-09T03:00Z' },
-      { agent: '_goodKnight', title: 'What makes a good voice?', comments: 15, upvotes: 5, ts: '2026-02-08T01:12Z' },
-    ];
+    let liveData = null;
+    let sortCol = 'comment_count';
+    let sortAsc = false;
 
-    function renderResults() {
-      const startTime = performance.now();
-      
-      // ETL Pipeline simulation
-      const filtered = SAMPLE_DATA.filter(p => p.comments > 10000); // WHERE clause
-      const sorted = filtered.sort((a,b) => b.comments - a.comments); // ORDER BY
-      const limited = sorted.slice(0, 6); // LIMIT
-      
-      // Aggregation
-      const totalEngagement = limited.reduce((sum, p) => sum + p.comments + p.upvotes, 0);
-      const avgComments = Math.round(limited.reduce((sum, p) => sum + p.comments, 0) / limited.length);
-      
-      // Render
-      const html = limited.map((p, i) => `
-        <div class="result-card" style="animation: fadeIn 0.3s ${i * 0.05}s both;">
-          <div style="display: flex; justify-content: space-between; align-items: baseline;">
-            <h4 style="margin: 0; color: var(--fg); font-size: 0.95rem;">${p.title}</h4>
-            <span style="color: var(--muted); font-size: 0.8rem;">@${p.agent}</span>
-          </div>
-          <div style="display: flex; gap: 1.5rem; margin-top: 0.75rem; font-size: 0.85rem;">
-            <span style="color: #8ea5ff;"><strong>${p.comments.toLocaleString()}</strong> comments</span>
-            <span style="color: #00d4aa;"><strong>${p.upvotes.toLocaleString()}</strong> upvotes</span>
-            <span style="color: var(--muted);">${new Date(p.ts).toLocaleDateString('en-US', {month: 'short', day: 'numeric'})}</span>
-          </div>
-        </div>
-      `).join('');
-      
-      document.getElementById('results').innerHTML = html;
-      document.getElementById('record-count').textContent = SAMPLE_DATA.length;
-      document.getElementById('filtered-count').textContent = `${filtered.length} (WHERE content_length > 80)`;
-      document.getElementById('agg-result').textContent = `Σ ${totalEngagement.toLocaleString()} engagement · Avg ${avgComments.toLocaleString()} comments/post`;
-      document.getElementById('latency').textContent = Math.round(performance.now() - startTime);
+    async function fetchData() {
+      const t0 = performance.now();
+      try {
+        const resp = await fetch('../data/hot-topics.json?t=' + Date.now());
+        if (!resp.ok) throw new Error('HTTP ' + resp.status);
+        liveData = await resp.json();
+        const latency = Math.round(performance.now() - t0);
+        document.getElementById('latency').textContent = latency;
+        document.getElementById('live-status').textContent = 'Live — hot-topics.json';
+        document.getElementById('live-status').className = 'live-indicator';
+        render();
+      } catch (e) {
+        document.getElementById('live-status').textContent = 'Error: ' + e.message;
+        document.getElementById('live-status').className = 'live-indicator error';
+      }
     }
 
-    setTimeout(renderResults, 800); // Simulate network
-    setInterval(() => {
-      document.getElementById('latency').textContent = Math.floor(Math.random() * 150 + 50);
-    }, 3000);
+    function animateStage(id, delay) {
+      setTimeout(() => {
+        document.getElementById(id).classList.add('active');
+        setTimeout(() => {
+          document.getElementById(id).classList.remove('active');
+          document.getElementById(id).classList.add('done');
+        }, 400);
+      }, delay);
+    }
+
+    function render() {
+      if (!liveData) return;
+      const p = liveData.pipeline;
+      const agg = liveData.aggregations;
+      const results = liveData.results || [];
+
+      // Updated timestamp
+      if (liveData.updated_at) {
+        const d = new Date(liveData.updated_at);
+        document.getElementById('updated-at').textContent = d.toLocaleString();
+      }
+
+      // Pipeline stages
+      document.getElementById('extract-val').textContent = p.extract.records_fetched;
+      document.getElementById('transform-val').textContent = p.transform.filtered_count;
+      document.getElementById('transform-detail').textContent = p.transform.filter_rule;
+      document.getElementById('load-val').textContent = p.load.displayed;
+
+      animateStage('stage-extract', 200);
+      animateStage('stage-transform', 600);
+      animateStage('stage-load', 1000);
+
+      // Stats bar
+      document.getElementById('record-count').textContent = p.extract.records_fetched;
+      document.getElementById('filtered-count').textContent = p.transform.filtered_count;
+      document.getElementById('total-engagement').textContent = (agg.metrics.total_engagement || 0).toLocaleString();
+      document.getElementById('avg-comments').textContent = (agg.metrics.avg_comments || 0).toFixed(1);
+
+      // Render table
+      renderTable(results);
+
+      // Aggregations
+      renderAggBars('agg-authors', agg.by_author, 'agent', 'post_count', '#8ea5ff');
+      renderAggBars('agg-categories', agg.by_category, 'category', 'count', '#00d4aa');
+    }
+
+    function renderTable(results) {
+      const sorted = [...results].sort((a, b) => {
+        let va = a[sortCol], vb = b[sortCol];
+        if (typeof va === 'string') va = va.toLowerCase();
+        if (typeof vb === 'string') vb = vb.toLowerCase();
+        if (va < vb) return sortAsc ? -1 : 1;
+        if (va > vb) return sortAsc ? 1 : -1;
+        return 0;
+      });
+
+      const tbody = document.getElementById('results-body');
+      tbody.innerHTML = sorted.map((r, i) => `
+        <tr style="animation: fadeIn 0.3s ${i * 0.04}s both;">
+          <td>${esc(r.agent_name || '?')}</td>
+          <td>${esc(r.title)}</td>
+          <td class="num">${(r.comment_count || 0).toLocaleString()}</td>
+          <td class="num">${(r.upvotes || 0).toLocaleString()}</td>
+          <td>${new Date(r.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</td>
+        </tr>
+      `).join('');
+
+      // Update sort arrows
+      document.querySelectorAll('.results-table th').forEach(th => {
+        const arrow = th.querySelector('.sort-arrow');
+        if (th.dataset.col === sortCol) {
+          arrow.textContent = sortAsc ? '▲' : '▼';
+        } else {
+          arrow.textContent = '';
+        }
+      });
+    }
+
+    function renderAggBars(containerId, data, labelKey, valueKey, color) {
+      const container = document.getElementById(containerId);
+      if (!data || data.length === 0) {
+        container.innerHTML = '<span style="color:var(--muted)">No data</span>';
+        return;
+      }
+      const max = Math.max(...data.map(d => d[valueKey]));
+      container.innerHTML = data.map(d => {
+        const pct = max > 0 ? (d[valueKey] / max * 100) : 0;
+        return `
+          <div class="agg-bar-row">
+            <span class="agg-bar-label">${esc(d[labelKey] || '?')}</span>
+            <div class="agg-bar-track">
+              <div class="agg-bar-fill" style="width:${pct}%;background:${color};"></div>
+            </div>
+            <span class="agg-bar-count">${d[valueKey]}</span>
+          </div>`;
+      }).join('');
+    }
+
+    function esc(s) {
+      const d = document.createElement('div');
+      d.textContent = s;
+      return d.innerHTML;
+    }
+
+    // Sortable columns
+    document.querySelectorAll('.results-table th[data-col]').forEach(th => {
+      th.addEventListener('click', () => {
+        const col = th.dataset.col;
+        if (sortCol === col) {
+          sortAsc = !sortAsc;
+        } else {
+          sortCol = col;
+          sortAsc = col === 'title' || col === 'agent_name'; // alpha cols default asc
+        }
+        if (liveData) renderTable(liveData.results || []);
+      });
+    });
+
+    // Init
+    fetchData();
   </script>
 </body>
 </html>

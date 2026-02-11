@@ -14,6 +14,7 @@ AGENT_NAME = os.getenv("MOLTBOOK_AGENT", "_goodKnight")
 DATA_DIR = pathlib.Path(__file__).resolve().parents[1] / "data"
 ENGAGEMENT_PATH = DATA_DIR / "engagement.json"
 STATUS_PATH = DATA_DIR / "status.json"
+HOT_TOPICS_PATH = DATA_DIR / "hot-topics.json"
 PROFILE_URL = f"https://www.moltbook.com/api/v1/agents/profile?name={AGENT_NAME}"
 
 def load_api_key() -> str:
@@ -101,6 +102,75 @@ def update_status(posts: list[dict], updated_at: str) -> None:
     status["updated_at"] = updated_at
     STATUS_PATH.write_text(json.dumps(status, indent=2))
 
+def build_hot_topics(posts: list[dict]) -> dict:
+    """Build hot topics dataset with aggregations for demo."""
+    def norm_ts(ts: str | None) -> str:
+        if not ts:
+            return ""
+        return ts.rstrip("Z") + "Z"
+    
+    # Filter: posts with content length and not spam (using title/content heuristics)
+    filtered = []
+    spam_patterns = ["claw mint", "mint claw", "airdrop", "earn per", "free claw", "claim claw"]
+    for post in posts:
+        title = post.get("title", "")
+        content = post.get("content", "")
+        combined = f"{title} {content}".lower()
+        is_spam = any(pattern in combined for pattern in spam_patterns)
+        is_substantive = len(combined) > 40 or post.get("comment_count", 0) > 1
+        if is_substantive and not is_spam:
+            filtered.append(post)
+    
+    # Sort by comment_count DESC (hot topics)
+    sorted_posts = sorted(filtered, key=lambda p: p.get("comment_count", 0), reverse=True)[:10]
+    
+    # Format entries
+    entries = []
+    for post in sorted_posts:
+        entries.append({
+            "id": post.get("id"),
+            "agent_name": post.get("author", {}).get("agent_name", "?"),
+            "title": post.get("title", ""),
+            "comment_count": post.get("comment_count", 0),
+            "upvotes": post.get("upvotes", 0),
+            "created_at": norm_ts(post.get("created_at")),
+            "category": post.get("category", "general"),
+        })
+    
+    # GROUP BY aggregation: posts by author
+    author_counts = {}
+    category_counts = {}
+    for post in filtered:
+        agent = post.get("author", {}).get("agent_name", "?")
+        cat = post.get("category", "general")
+        author_counts[agent] = author_counts.get(agent, 0) + 1
+        category_counts[cat] = category_counts.get(cat, 0) + 1
+    
+    # Calculate aggregates
+    total_engagement = sum(p.get("comment_count", 0) + p.get("upvotes", 0) for p in sorted_posts)
+    avg_comments = round(sum(p.get("comment_count", 0) for p in sorted_posts) / len(sorted_posts), 1) if sorted_posts else 0
+    
+    return {
+        "updated_at": datetime.now(timezone.utc).isoformat().replace("+00:00", "Z"),
+        "query": "SELECT agent_name, title, comment_count, upvotes, created_at FROM posts WHERE content_length > 80 AND NOT spam ORDER BY comment_count DESC LIMIT 10",
+        "pipeline": {
+            "extract": {"records_fetched": len(posts), "source": "Moltbook API", "latency_ms": 0},
+            "transform": {"filtered_count": len(filtered), "filter_rule": "content_length > 80 AND NOT spam", "sorted_by": "comment_count DESC"},
+            "load": {"displayed": len(entries), "limit": 10},
+        },
+        "aggregations": {
+            "by_author": [{"agent": k, "post_count": v} for k, v in sorted(author_counts.items(), key=lambda x: -x[1])[:8]],
+            "by_category": [{"category": k, "count": v} for k, v in sorted(category_counts.items(), key=lambda x: -x[1])],
+            "metrics": {
+                "total_filtered": len(filtered),
+                "total_displayed": len(entries),
+                "total_engagement": total_engagement,
+                "avg_comments": avg_comments,
+            }
+        },
+        "results": entries,
+    }
+
 def main() -> None:
     api_key = load_api_key()
     profile = fetch_profile(api_key)
@@ -108,9 +178,15 @@ def main() -> None:
     payload = build_payload(posts)
     ENGAGEMENT_PATH.write_text(json.dumps(payload, indent=2))
     update_status(posts, payload["updated_at"])
+    
+    # Build hot topics for demo
+    hot_topics = build_hot_topics(posts)
+    HOT_TOPICS_PATH.write_text(json.dumps(hot_topics, indent=2))
+    
     print(
         f"Updated {ENGAGEMENT_PATH} with {len(payload['posts'])} posts; "
-        f"status now tracks {len(posts)} posts / {sum(p.get('comment_count', 0) for p in posts)} comments."
+        f"status now tracks {len(posts)} posts / {sum(p.get('comment_count', 0) for p in posts)} comments; "
+        f"hot-topics ready with {len(hot_topics['results'])} results."
     )
 
 if __name__ == "__main__":
