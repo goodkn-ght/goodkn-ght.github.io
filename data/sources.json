@@ -1,0 +1,35 @@
+{
+  "updated_at": "2026-02-11T04:58:27.031Z",
+  "sources": [
+    {
+      "id": "athletics",
+      "name": "LSU Athletics",
+      "type": "json",
+      "url": "https://lsusports.net/wp-json/lsusports/v1/events?per_page=100",
+      "category": "Athletics",
+      "status": "error",
+      "error": "HTTP 404",
+      "last_failure": "2026-02-11T04:58:26.803Z"
+    },
+    {
+      "id": "campus",
+      "name": "LSU Campus Events",
+      "type": "ics",
+      "url": "https://calendar.lsu.edu/calendar.ics",
+      "category": "Campus",
+      "status": "error",
+      "error": "HTTP 403",
+      "last_failure": "2026-02-11T04:58:26.954Z"
+    },
+    {
+      "id": "academic",
+      "name": "LSU Academic Calendar",
+      "type": "ics",
+      "url": "https://www.lsu.edu/academicaffairs/resources/academic_calendar/icalendar/academic-calendar.ics",
+      "category": "Academic",
+      "status": "error",
+      "error": "HTTP 404",
+      "last_failure": "2026-02-11T04:58:27.030Z"
+    }
+  ]
+}

@@ -61,10 +61,11 @@
         <p class="tag" style="color: #ff6b6b;">♞ goodKnight / Demo</p>
         <h1>Live Database Query Interface</h1>
         <p class="lead">Real-time ETL pipeline: Moltbook API → filtering → aggregation → visualization</p>
-        <div style="margin-top: 1rem; display: flex; gap: 1rem; flex-wrap: wrap;">
+        <div style="margin-top: 1rem; display: flex; gap: 1rem; flex-wrap: wrap; align-items: center;">
           <span class="live-indicator" id="live-status" style="color: var(--muted);">Connecting to data source…</span>
           <span style="color: var(--muted);">Latency: <span id="latency">--</span>ms</span>
           <span style="color: var(--muted);">Updated: <span id="updated-at">--</span></span>
+          <span style="color: var(--muted);" id="refresh-label">Auto-refresh idle</span>
         </div>
       </div>
     </div>
@@ -168,8 +169,45 @@ LIMIT 10;</div>
     let liveData = null;
     let sortCol = 'comment_count';
     let sortAsc = false;
+    let lastRenderSignature = '';
+    let stageTimers = [];
+    const REFRESH_INTERVAL_MS = 45000;
+    let refreshTimeoutId = null;
+    let countdownIntervalId = null;
+    let nextRefreshAt = null;
+    const refreshLabel = document.getElementById('refresh-label');
+    const dateFormatter = new Intl.DateTimeFormat('en-US', {
+      month: 'short',
+      day: 'numeric',
+      hour: '2-digit',
+      minute: '2-digit'
+    });
 
-    async function fetchData() {
+    function updateRefreshLabel() {
+      if (!nextRefreshAt) {
+        refreshLabel.textContent = 'Auto-refresh idle';
+        return;
+      }
+      const remaining = nextRefreshAt - Date.now();
+      if (remaining <= 0) {
+        refreshLabel.textContent = 'Refreshing now…';
+      } else {
+        refreshLabel.textContent = `Auto-refresh in ${Math.ceil(remaining / 1000)}s`;
+      }
+    }
+
+    function scheduleRefresh() {
+      if (refreshTimeoutId) clearTimeout(refreshTimeoutId);
+      if (countdownIntervalId) clearInterval(countdownIntervalId);
+      nextRefreshAt = Date.now() + REFRESH_INTERVAL_MS;
+      updateRefreshLabel();
+      countdownIntervalId = setInterval(updateRefreshLabel, 1000);
+      refreshTimeoutId = setTimeout(() => {
+        fetchData(true);
+      }, REFRESH_INTERVAL_MS);
+    }
+
+    async function fetchData(autoTriggered = false) {
       const t0 = performance.now();
       try {
         const resp = await fetch('../data/hot-topics.json?t=' + Date.now());
@@ -179,28 +217,54 @@ LIMIT 10;</div>
         document.getElementById('latency').textContent = latency;
         document.getElementById('live-status').textContent = 'Live — hot-topics.json';
         document.getElementById('live-status').className = 'live-indicator';
-        render();
+        render(true);
       } catch (e) {
         document.getElementById('live-status').textContent = 'Error: ' + e.message;
         document.getElementById('live-status').className = 'live-indicator error';
+      } finally {
+        scheduleRefresh();
       }
     }
 
-    function animateStage(id, delay) {
-      setTimeout(() => {
-        document.getElementById(id).classList.add('active');
-        setTimeout(() => {
-          document.getElementById(id).classList.remove('active');
-          document.getElementById(id).classList.add('done');
-        }, 400);
-      }, delay);
+    function resetStageAnimations() {
+      stageTimers.forEach(clearTimeout);
+      stageTimers = [];
+      document.querySelectorAll('.pipeline-stage').forEach(stage => {
+        stage.classList.remove('active', 'done', 'error');
+      });
     }
 
-    function render() {
+    function animateStage(id, delay) {
+      const startTimer = setTimeout(() => {
+        const el = document.getElementById(id);
+        el.classList.add('active');
+        const doneTimer = setTimeout(() => {
+          el.classList.remove('active');
+          el.classList.add('done');
+        }, 400);
+        stageTimers.push(doneTimer);
+      }, delay);
+      stageTimers.push(startTimer);
+    }
+
+    function render(force = false) {
       if (!liveData) return;
       const p = liveData.pipeline;
       const agg = liveData.aggregations;
       const results = liveData.results || [];
+      const signaturePayload = {
+        updated_at: liveData.updated_at,
+        pipeline: p,
+        metrics: agg ? agg.metrics : null,
+        authors: agg ? agg.by_author : null,
+        categories: agg ? agg.by_category : null,
+        results
+      };
+      const signature = JSON.stringify(signaturePayload);
+      if (!force && signature === lastRenderSignature) {
+        return;
+      }
+      lastRenderSignature = signature;
 
       // Updated timestamp
       if (liveData.updated_at) {
@@ -214,6 +278,7 @@ LIMIT 10;</div>
       document.getElementById('transform-detail').textContent = p.transform.filter_rule;
       document.getElementById('load-val').textContent = p.load.displayed;
 
+      resetStageAnimations();
       animateStage('stage-extract', 200);
       animateStage('stage-transform', 600);
       animateStage('stage-load', 1000);
@@ -243,15 +308,21 @@ LIMIT 10;</div>
       });
 
       const tbody = document.getElementById('results-body');
-      tbody.innerHTML = sorted.map((r, i) => `
-        <tr style="animation: fadeIn 0.3s ${i * 0.04}s both;">
+      const fragment = document.createDocumentFragment();
+      sorted.forEach((r, i) => {
+        const tr = document.createElement('tr');
+        tr.style.animation = `fadeIn 0.3s ${i * 0.04}s both`;
+        tr.innerHTML = `
           <td>${esc(r.agent_name || '?')}</td>
           <td>${esc(r.title)}</td>
           <td class="num">${(r.comment_count || 0).toLocaleString()}</td>
           <td class="num">${(r.upvotes || 0).toLocaleString()}</td>
-          <td>${new Date(r.created_at).toLocaleDateString('en-US', { month: 'short', day: 'numeric', hour: '2-digit', minute: '2-digit' })}</td>
-        </tr>
-      `).join('');
+          <td>${r.created_at ? dateFormatter.format(new Date(r.created_at)) : '--'}</td>
+        `;
+        fragment.appendChild(tr);
+      });
+      tbody.innerHTML = '';
+      tbody.appendChild(fragment);
 
       // Update sort arrows
       document.querySelectorAll('.results-table th').forEach(th => {

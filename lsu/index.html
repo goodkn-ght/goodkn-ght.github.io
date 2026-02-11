@@ -21,7 +21,7 @@
     .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 1rem; }
     .meta-card { background: rgba(88,44,131,0.25); border: 1px solid rgba(88,44,131,0.4); border-radius: 14px; padding: 1rem; backdrop-filter: blur(4px); }
     .meta-card strong { display: block; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.35rem; }
-    .ask-panel { display: flex; flex-direction: column; gap: 0.75rem; }
+    .search-panel { display: flex; flex-direction: column; gap: 0.9rem; }
     .ask-row { display: flex; gap: 0.5rem; flex-wrap: wrap; }
     .ask-row input { flex: 1; min-width: 220px; background: #080a16; border: 1px solid rgba(255,255,255,0.12); border-radius: 12px; color: #fff; padding: 0.95rem 1rem; font-size: 1rem; }
     .ask-row button { background: linear-gradient(135deg, var(--accent-gold), #ffb347); border: none; padding: 0 1.9rem; border-radius: 12px; color: #2b1d00; font-weight: 700; letter-spacing: 0.03em; cursor: pointer; transition: transform 0.12s ease, box-shadow 0.2s; }
@@ -29,16 +29,27 @@
     .chip-row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
     .chip { border: 1px solid rgba(253,208,35,0.4); color: var(--fg); padding: 0.45rem 1rem; border-radius: 999px; font-size: 0.85rem; cursor: pointer; background: rgba(253,208,35,0.12); }
     .chip:hover { border-color: var(--accent-gold); background: rgba(253,208,35,0.2); }
-    .response-panel { display: flex; flex-direction: column; gap: 1rem; }
-    .response-status { font-size: 0.85rem; color: var(--muted); display: inline-flex; align-items: center; gap: 0.45rem; }
-    .response-status::before { content: ''; width: 9px; height: 9px; border-radius: 50%; background: rgba(255,255,255,0.4); box-shadow: 0 0 10px rgba(253,208,35,0.5); }
-    .response-status.live::before { background: #00d4aa; }
-    .response-text p { margin: 0.35rem 0; line-height: 1.65; }
-    .reference-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 0.8rem; }
-    .reference-card { border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 1rem; background: rgba(0,0,0,0.2); }
-    .reference-card h4 { margin: 0 0 0.35rem; font-size: 1rem; color: var(--fg); }
-    .reference-card p { margin: 0; font-size: 0.9rem; color: var(--muted); }
+    .search-status { display: flex; flex-wrap: wrap; gap: 0.5rem; align-items: center; }
+    .status-pill { display: inline-flex; align-items: center; gap: 0.35rem; border-radius: 999px; padding: 0.3rem 0.9rem; font-size: 0.85rem; border: 1px solid rgba(255,255,255,0.15); color: var(--muted); }
+    .status-pill::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.35); }
+    .status-pill.live { color: var(--fg); border-color: rgba(57,255,182,0.4); }
+    .status-pill.live::before { background: #39ffb6; box-shadow: 0 0 8px rgba(57,255,182,0.6); }
+    .results-panel { display: flex; flex-direction: column; gap: 1rem; }
+    .results-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px,1fr)); gap: 1rem; }
+    .result-card { border: 1px solid rgba(255,255,255,0.08); border-radius: 14px; padding: 1.25rem; background: rgba(0,0,0,0.15); display: flex; flex-direction: column; gap: 0.9rem; min-height: 280px; }
+    .result-card h3 { margin: 0; font-size: 1.15rem; }
+    .fact-answer p { margin: 0.35rem 0; line-height: 1.65; }
+    .reference-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(200px,1fr)); gap: 0.6rem; }
+    .reference-card { border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 0.8rem; background: rgba(255,255,255,0.03); }
+    .reference-card h4 { margin: 0 0 0.25rem; font-size: 0.95rem; color: var(--fg); }
+    .reference-card p { margin: 0; font-size: 0.85rem; color: var(--muted); }
     .tag-pill { display: inline-flex; align-items: center; gap: 0.2rem; border: 1px solid rgba(255,255,255,0.13); border-radius: 999px; padding: 0.18rem 0.6rem; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+    .web-results { display: flex; flex-direction: column; gap: 0.75rem; }
+    .web-result { border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 0.95rem; background: rgba(255,255,255,0.02); display: flex; flex-direction: column; gap: 0.45rem; }
+    .web-meta { font-size: 0.8rem; color: var(--muted); display: flex; gap: 0.5rem; flex-wrap: wrap; text-transform: uppercase; letter-spacing: 0.05em; }
+    .web-result h4 { margin: 0; font-size: 1rem; }
+    .web-result a { color: var(--accent-gold); text-decoration: none; }
+    .web-result p { margin: 0; color: var(--muted); }
     .facts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap: 1rem; }
     .fact-card { border: 1px solid rgba(255,255,255,0.09); border-radius: 12px; padding: 1rem; background: rgba(255,255,255,0.03); }
     .fact-card span { display: block; font-size: 0.72rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.35rem; }
@@ -48,6 +59,20 @@
     .event-date { font-weight: 700; color: var(--accent-gold); min-width: 95px; font-variant-numeric: tabular-nums; }
     .event-row p { margin: 0.05rem 0 0; color: var(--muted); }
     .source-line { font-size: 0.8rem; color: var(--muted); margin-top: 0.4rem; }
+    .live-panel { display: flex; flex-direction: column; gap: 0.9rem; }
+    .live-header { display: flex; flex-wrap: wrap; justify-content: space-between; gap: 0.8rem; align-items: flex-start; }
+    .live-header h3 { margin: 0; font-size: 1.2rem; }
+    .live-header p { margin: 0; color: var(--muted); font-size: 0.9rem; }
+    .live-status { font-size: 0.85rem; color: var(--muted); display: inline-flex; align-items: center; gap: 0.35rem; }
+    .live-status::before { content: ''; width: 8px; height: 8px; border-radius: 999px; background: rgba(255,255,255,0.3); }
+    .live-status.live::before { background: #39ffb6; box-shadow: 0 0 8px rgba(57,255,182,0.6); }
+    .live-card-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 0.8rem; }
+    .live-card { border: 1px solid rgba(255,255,255,0.08); border-radius: 12px; padding: 1rem; background: rgba(0,0,0,0.18); display: flex; flex-direction: column; gap: 0.5rem; }
+    .live-card h4 { margin: 0; font-size: 1rem; }
+    .live-card h4 a { color: var(--fg); text-decoration: none; }
+    .live-card h4 a:hover { color: var(--accent-gold); }
+    .live-card p { margin: 0; color: var(--muted); font-size: 0.9rem; }
+    .live-meta { font-size: 0.75rem; letter-spacing: 0.06em; text-transform: uppercase; color: var(--muted); display: flex; gap: 0.5rem; align-items: center; }
     @media (max-width: 640px) { .ask-row button { width: 100%; } }
   </style>
 </head>
@@ -83,7 +108,7 @@
       </div>
     </section>
 
-    <section class="panel ask-panel">
+    <section class="panel search-panel">
       <div class="ask-row">
         <input id="question" type="text" placeholder="Try: Who was LSU's first quarterback? | Where is Patrick Taylor Hall? | How big is LSU?">
         <button id="ask-btn">Ask Mike</button>
@@ -96,13 +121,28 @@
         <button class="chip" data-question="Any LSU events this spring?">Events</button>
         <button class="chip" data-question="What is Mike the Tiger's habitat like?">Mike's Habitat</button>
       </div>
+      <div class="search-status">
+        <span class="status-pill" id="fact-status">Fact pack idle</span>
+        <span class="status-pill" id="web-status">DuckDuckGo idle</span>
+      </div>
     </section>
 
-    <section class="panel response-panel">
-      <div class="response-status" id="response-status">Waiting for a question…</div>
-      <div class="response-text" id="answer-text"></div>
-      <div class="reference-grid" id="reference-grid"></div>
-      <div class="source-line" id="source-line"></div>
+    <section class="panel results-panel">
+      <div class="results-grid">
+        <div class="result-card" id="fact-card">
+          <div class="status-pill" id="response-status">Waiting for a question…</div>
+          <h3>Curated LSU Fact Pack</h3>
+          <div class="fact-answer" id="answer-text"></div>
+          <div class="reference-grid" id="reference-grid"></div>
+          <div class="source-line" id="source-line"></div>
+        </div>
+        <div class="result-card" id="web-card">
+          <div class="status-pill" id="live-status">Live web idle</div>
+          <h3>DuckDuckGo Live Scan</h3>
+          <p style="margin:0;color:var(--muted);">Returns fresh LSU mentions directly from DuckDuckGo the moment you ask.</p>
+          <div class="web-results" id="live-results"></div>
+        </div>
+      </div>
     </section>
 
     <section class="panel">
@@ -113,6 +153,18 @@
     <section class="panel events-panel">
       <h3>Upcoming LSU Moments</h3>
       <div id="events-list"></div>
+    </section>
+
+    <section class="panel live-panel">
+      <div class="live-header">
+        <div>
+          <h3>Live Web Pulse</h3>
+          <p>Direct lookups against public web endpoints whenever you ask a new question.</p>
+        </div>
+        <span class="tag-pill" id="live-source-pill">Source: —</span>
+      </div>
+      <div class="live-status" id="live-status">Waiting for a question…</div>
+      <div class="live-card-grid" id="live-results"></div>
     </section>
   </main>
 
@@ -130,6 +182,14 @@
     const statusEl = document.getElementById('response-status');
     const refsEl = document.getElementById('reference-grid');
     const sourceLine = document.getElementById('source-line');
+    const liveStatusEl = document.getElementById('live-status');
+    const liveResultsEl = document.getElementById('live-results');
+    const factStatusPill = document.getElementById('fact-status');
+    const webStatusPill = document.getElementById('web-status');
+    const BRAVE_PROXY_URL = window.MIKETIGER_BRAVE_PROXY || '';
+    const LIVE_PROVIDER_NAME = BRAVE_PROXY_URL ? 'Brave API Proxy' : 'DuckDuckGo Instant Answer API';
+    webStatusPill.textContent = LIVE_PROVIDER_NAME + ' ready';
+    let liveAbortController = null;
 
     async function init() {
       const t0 = performance.now();
@@ -137,12 +197,14 @@
       lsuData = await resp.json();
       const latency = Math.round(performance.now() - t0);
       document.getElementById('meta-latency').textContent = latency;
-      document.getElementById('meta-updated').textContent = 'Updated ' + new Date(lsuData.updated_at).toLocaleString('en-US', { hour12: false });
+      const updatedStamp = new Date(lsuData.updated_at).toLocaleString('en-US', { hour12: false });
+      document.getElementById('meta-updated').textContent = 'Updated ' + updatedStamp;
       document.getElementById('meta-source').textContent = 'Source: ' + lsuData.source;
       hydrateKnowledge(lsuData);
       renderFacts(lsuData.stats);
       renderEvents(lsuData.events);
       sourceLine.textContent = 'Sources: ' + lsuData.source;
+      factStatusPill.textContent = 'Fact pack synced ' + updatedStamp;
     }
 
     function hydrateKnowledge(data) {
@@ -194,12 +256,15 @@
       return snippets;
     }
 
-    function answerQuestion(q) {
+    function runSearch(q) {
       if (!q.trim()) return;
       statusEl.textContent = 'Searching curated fact pack…';
       statusEl.classList.add('live');
+      factStatusPill.textContent = 'Fact pack searching…';
+      factStatusPill.classList.add('live');
       answerBox.innerHTML = '';
       refsEl.innerHTML = '';
+      fetchLiveSearch(q);
 
       const tokens = q.toLowerCase().match(/[a-z0-9']+/g) || [];
       const scored = knowledgeBase.map(entry => ({ entry, score: scoreEntry(entry, tokens) }))
@@ -220,7 +285,11 @@
 
       const answerHTML = responseParts.map(line => `<p>${line}</p>`).join('');
       simulateTyping(answerHTML, () => {
+        const stamp = new Date().toLocaleTimeString('en-US', { hour12: false });
         statusEl.textContent = 'Answer generated from LSU public fact pack.';
+        statusEl.classList.remove('live');
+        factStatusPill.textContent = 'Fact pack updated ' + stamp;
+        factStatusPill.classList.remove('live');
       });
 
       refsEl.innerHTML = scored.map(item => `
@@ -285,17 +354,161 @@
       `).join('');
     }
 
-    askBtn.addEventListener('click', () => answerQuestion(questionInput.value));
+    function hostnameFromUrl(url = '') {
+      try {
+        const host = new URL(url);
+        return (host.hostname || 'web').replace(/^www\./, '');
+      } catch (err) {
+        return 'web';
+      }
+    }
+
+    function normalizeDuckDuckGo(payload = {}, query = '') {
+      const results = [];
+      const seen = new Set();
+      const fallback = `https://duckduckgo.com/?q=${encodeURIComponent(query + ' LSU')}`;
+      const push = (item) => {
+        if (!item.url || seen.has(item.url)) return;
+        seen.add(item.url);
+        results.push(item);
+      };
+      if (payload.AbstractText) {
+        push({
+          title: payload.Heading || 'Summary',
+          snippet: payload.AbstractText,
+          url: payload.AbstractURL || fallback,
+          source: hostnameFromUrl(payload.AbstractURL || fallback),
+          tag: payload.AbstractSource || 'Summary'
+        });
+      }
+      (payload.Results || []).forEach(result => {
+        if (!result) return;
+        push({
+          title: result.Text || 'Result',
+          snippet: result.Text || '',
+          url: result.FirstURL || fallback,
+          source: hostnameFromUrl(result.FirstURL || fallback),
+          tag: 'Result'
+        });
+      });
+      const flattenTopics = (topics = []) => {
+        topics.forEach(topic => {
+          if (!topic) return;
+          if (topic.Topics) {
+            flattenTopics(topic.Topics);
+          } else if (topic.FirstURL && topic.Text) {
+            push({
+              title: topic.Text.split(' - ')[0],
+              snippet: topic.Text,
+              url: topic.FirstURL,
+              source: hostnameFromUrl(topic.FirstURL),
+              tag: 'Related'
+            });
+          }
+        });
+      };
+      flattenTopics(payload.RelatedTopics || []);
+      return results.slice(0, 5);
+    }
+
+    function normalizeBrave(payload = {}) {
+      const results = [];
+      const seen = new Set();
+      const pushItems = (items = [], tag = 'Web') => {
+        items.forEach(item => {
+          if (!item) return;
+          const url = item.url || item.link;
+          if (!url || seen.has(url)) return;
+          seen.add(url);
+          results.push({
+            title: item.title || 'Result',
+            snippet: item.description || item.snippet || '',
+            url,
+            source: hostnameFromUrl(url),
+            tag
+          });
+        });
+      };
+      pushItems(payload.web?.results, 'Web');
+      pushItems(payload.news?.results, 'News');
+      pushItems(payload.videos?.results, 'Video');
+      return results.slice(0, 5);
+    }
+
+    function renderLiveResults(items = []) {
+      if (!items.length) {
+        liveResultsEl.innerHTML = '<p style="color:var(--muted)">No live references matched that query yet.</p>';
+        return;
+      }
+      liveResultsEl.innerHTML = items.map(item => `
+        <article class="web-result">
+          <div class="web-meta">
+            <span>${item.source}</span>
+            ${item.tag ? `<span>${item.tag}</span>` : ''}
+          </div>
+          <h4><a href="${item.url}" target="_blank" rel="noopener">${item.title}</a></h4>
+          <p>${item.snippet || 'No preview available.'}</p>
+        </article>
+      `).join('');
+    }
+
+    async function fetchLiveSearch(question = '') {
+      if (!question.trim()) return;
+      if (liveAbortController) {
+        liveAbortController.abort();
+      }
+      liveAbortController = new AbortController();
+      const signal = liveAbortController.signal;
+      liveStatusEl.textContent = 'Querying ' + LIVE_PROVIDER_NAME + '…';
+      liveStatusEl.classList.add('live');
+      webStatusPill.textContent = 'Searching ' + LIVE_PROVIDER_NAME + '…';
+      webStatusPill.classList.add('live');
+      liveResultsEl.innerHTML = '';
+      try {
+        let liveItems = [];
+        if (BRAVE_PROXY_URL) {
+          const resp = await fetch(`${BRAVE_PROXY_URL}?q=${encodeURIComponent(question)}`, { signal });
+          if (!resp.ok) throw new Error('Proxy returned ' + resp.status);
+          const data = await resp.json();
+          liveItems = normalizeBrave(data);
+        } else {
+          const resp = await fetch(`https://api.duckduckgo.com/?q=${encodeURIComponent(question + ' LSU')}&format=json&no_html=1&no_redirect=1&t=mikethetiger`, { signal });
+          if (!resp.ok) throw new Error('DuckDuckGo request failed');
+          const data = await resp.json();
+          liveItems = normalizeDuckDuckGo(data, question);
+        }
+        renderLiveResults(liveItems);
+        const stamp = new Date().toLocaleTimeString('en-US', { hour12: false });
+        liveStatusEl.textContent = liveItems.length ? 'Live web updated ' + stamp : 'No web matches yet (' + stamp + ')';
+        if (!liveItems.length) {
+          liveStatusEl.classList.remove('live');
+          webStatusPill.classList.remove('live');
+          webStatusPill.textContent = 'No DuckDuckGo hits yet';
+        } else {
+          webStatusPill.textContent = 'Updated ' + stamp;
+        }
+      } catch (err) {
+        if (err.name === 'AbortError') return;
+        console.error(err);
+        liveStatusEl.classList.remove('live');
+        webStatusPill.classList.remove('live');
+        liveStatusEl.textContent = 'Live lookup failed: ' + err.message;
+        webStatusPill.textContent = LIVE_PROVIDER_NAME + ' error';
+        liveResultsEl.innerHTML = '';
+      }
+    }
+
+    askBtn.addEventListener('click', () => runSearch(questionInput.value));
     questionInput.addEventListener('keydown', (e) => {
       if (e.key === 'Enter') {
-        answerQuestion(questionInput.value);
+        runSearch(questionInput.value);
       }
     });
     document.getElementById('chip-row').addEventListener('click', (e) => {
       if (e.target.matches('[data-question]')) {
         const q = e.target.getAttribute('data-question');
         questionInput.value = q;
-        answerQuestion(q);
+        runSearch(q);
       }
     });
 

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>LSU Live Widget Demo</title>
+    <link rel="stylesheet" href="/styles.css" />
+    <link rel="stylesheet" href="/lsu-widget/widget.css" />
+    <style>
+      body {
+        background: radial-gradient(circle at top, #241145, #0c0b16);
+        min-height: 100vh;
+        margin: 0;
+        padding: 40px 16px;
+        color: #fff;
+        font-family: "Inter", system-ui, sans-serif;
+        display: flex;
+        justify-content: center;
+      }
+      .demo-shell {
+        max-width: 960px;
+        width: 100%;
+      }
+      .demo-shell h1 {
+        font-weight: 600;
+      }
+      pre {
+        background: rgba(255, 255, 255, 0.08);
+        padding: 16px;
+        border-radius: 12px;
+        overflow: auto;
+      }
+    </style>
+  </head>
+  <body>
+    <div class="demo-shell">
+      <h1>LSU Live Widget</h1>
+      <p>
+        Drop this widget onto any GitHub Pages site (or static host) to surface real-time LSU athletics, campus, and academic events.
+      </p>
+      <pre><code>&lt;link rel="stylesheet" href="https://your-site/lsu-widget/widget.css" /&gt;
+&lt;div id="lsu-widget"&gt;&lt;/div&gt;
+&lt;script src="https://your-site/lsu-widget/widget.js"&gt;&lt;/script&gt;</code></pre>
+      <div id="lsu-widget"></div>
+    </div>
+    <script src="/lsu-widget/widget.js" defer></script>
+  </body>
+</html>

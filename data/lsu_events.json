@@ -1,0 +1,54 @@
+{
+  "updated_at": "2026-02-11T04:58:27.031Z",
+  "timezone": "America/Chicago",
+  "events": [
+    {
+      "id": "sample-athletics",
+      "title": "Sample: Baseball vs. Florida",
+      "category": "Athletics",
+      "start": "2026-02-11T05:58:27.031Z",
+      "end": "2026-02-11T07:58:27.031Z",
+      "location": "Alex Box Stadium",
+      "status": "scheduled",
+      "url": "https://lsusports.net",
+      "source": "Synthetic Seed",
+      "updated_at": "2026-02-11T04:58:27.031Z"
+    },
+    {
+      "id": "sample-campus",
+      "title": "Sample: Innovation Park Tour",
+      "category": "Campus",
+      "start": "2026-02-12T06:58:27.031Z",
+      "end": "2026-02-12T08:58:27.031Z",
+      "location": "Patrick F. Taylor Hall",
+      "status": "scheduled",
+      "url": "https://calendar.lsu.edu",
+      "source": "Synthetic Seed",
+      "updated_at": "2026-02-11T04:58:27.031Z"
+    },
+    {
+      "id": "sample-academic",
+      "title": "Sample: FAFSA Priority Deadline",
+      "category": "Academic",
+      "start": "2026-02-16T04:58:27.031Z",
+      "end": "2026-02-16T05:58:27.031Z",
+      "location": "Online",
+      "status": "deadline",
+      "url": "https://www.lsu.edu/academicaffairs",
+      "source": "Synthetic Seed",
+      "updated_at": "2026-02-11T04:58:27.031Z"
+    }
+  ],
+  "highlights": [
+    "sample-athletics",
+    "sample-campus",
+    "sample-academic"
+  ],
+  "deadline_radar": [
+    {
+      "id": "sample-academic",
+      "title": "Sample: FAFSA Priority Deadline",
+      "date": "2026-02-16T04:58:27.031Z"
+    }
+  ]
+}

@@ -1,0 +1,66 @@
+name: LSU Widget Data Refresh
+
+on:
+  schedule:
+    # Every 30 minutes between 06:00-22:00 America/Chicago (~12:00-04:00 UTC)
+    - cron: "*/30 12-23 * * *"
+    - cron: "*/30 0-4 * * *"
+    # Hourly overnight (22:00-06:00 America/Chicago ~04:00-12:00 UTC)
+    - cron: "0 5-11 * * *"
+  workflow_dispatch:
+
+jobs:
+  refresh:
+    runs-on: ubuntu-latest
+    env:
+      TZ: America/Chicago
+    steps:
+      - name: Checkout website
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - name: Set up Node.js 22
+        uses: actions/setup-node@v4
+        with:
+          node-version: 22
+
+      - name: Generate LSU widget data
+        id: fetch
+        run: |
+          set +e
+          node scripts/lsu-widget/fetch-data.mjs
+          EXIT_CODE=$?
+          echo "exit_code=$EXIT_CODE" >> "$GITHUB_OUTPUT"
+          if [ "$EXIT_CODE" -ne 0 ] && [ "$EXIT_CODE" -ne 78 ]; then
+            echo "Data fetch failed with $EXIT_CODE"
+            exit $EXIT_CODE
+          fi
+
+      - name: Detect data changes
+        id: changes
+        run: |
+          if git status --porcelain data/lsu_events.json data/sources.json | grep -q "."; then
+            echo "changed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "changed=false" >> "$GITHUB_OUTPUT"
+          fi
+
+      - name: Show diff
+        if: steps.changes.outputs.changed == 'true'
+        run: git diff --stat data/lsu_events.json data/sources.json
+
+      - name: Commit updated data
+        if: steps.changes.outputs.changed == 'true'
+        env:
+          GH_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        run: |
+          git config user.name "goodknight-bot"
+          git config user.email "bot@goodkn-ght"
+          git add data/lsu_events.json data/sources.json
+          git commit -m "chore: refresh LSU widget data"
+          git push
+
+      - name: Log source health summary
+        run: |
+          node -e 'const fs=require("fs");const data=JSON.parse(fs.readFileSync("data/sources.json","utf-8"));console.log("Source health:");for (const src of data.sources) { console.log(`- ${src.id}: ${src.status ?? "unknown"} (events: ${src.events ?? 0})`); }'
