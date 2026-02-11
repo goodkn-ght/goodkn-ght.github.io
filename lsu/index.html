@@ -14,10 +14,23 @@
     body { background: #04050c; }
     .container { max-width: 1150px; margin: 2rem auto 4rem; padding: 0 1.25rem; display: flex; flex-direction: column; gap: 1.5rem; }
     .panel { background: var(--panel); border: 1px solid var(--border); border-radius: 16px; padding: 1.5rem; }
-    .hero-panel { padding: 2.5rem 1.75rem; border: 1px solid rgba(253,208,35,0.3); background: radial-gradient(circle at top, rgba(253,208,35,0.25), rgba(4,5,12,0.95)); }
-    .hero-panel h1 { margin: 0 0 0.5rem; font-size: clamp(2rem, 5vw, 2.8rem); }
-    .hero-panel p { margin: 0.35rem 0; max-width: 700px; }
+    .hero-panel { padding: 2.5rem 1.75rem; border: 1px solid rgba(253,208,35,0.3); background: radial-gradient(circle at top, rgba(253,208,35,0.25), rgba(4,5,12,0.95)); border-radius: 24px; }
+    .hero-panel--split { display: grid; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); gap: 2rem; align-items: stretch; }
+    .hero-copy h1 { margin: 0 0 0.5rem; font-size: clamp(2rem, 5vw, 3.1rem); }
+    .hero-copy p { margin: 0.5rem 0; max-width: 620px; }
+    .hero-list { list-style: none; margin: 1rem 0 0; padding: 0; display: grid; gap: 0.4rem; }
+    .hero-list li { display: flex; gap: 0.4rem; align-items: center; color: rgba(255,255,255,0.85); }
+    .hero-card { background: rgba(4,5,12,0.7); border: 1px solid rgba(255,255,255,0.1); border-radius: 20px; padding: 1.5rem; box-shadow: inset 0 0 0 1px rgba(255,255,255,0.06); }
+    .hero-card pre { background: rgba(0,0,0,0.6); padding: 1rem; border-radius: 12px; overflow-x: auto; font-size: 0.85rem; border: 1px solid rgba(255,255,255,0.08); }
+    .cta-row { display: flex; gap: 0.75rem; flex-wrap: wrap; margin-top: 1rem; }
+    .cta-primary, .cta-ghost { border-radius: 999px; padding: 0.8rem 1.4rem; font-weight: 600; text-decoration: none; }
+    .cta-primary { background: linear-gradient(135deg, var(--accent-gold), #ffb347); color: #1a1100; }
+    .cta-ghost { border: 1px solid rgba(255,255,255,0.35); color: var(--fg); }
     .hero-meta { display: flex; flex-wrap: wrap; gap: 1rem; margin-top: 1rem; color: var(--muted); font-size: 0.9rem; }
+    .stat-deck { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px, 1fr)); gap: 1rem; margin: 1.5rem 0 0; }
+    .stat-card { border: 1px solid rgba(255,255,255,0.12); border-radius: 16px; padding: 1rem; background: rgba(0,0,0,0.2); }
+    .stat-card span { text-transform: uppercase; letter-spacing: 0.08em; font-size: 0.75rem; color: var(--muted); }
+    .stat-card strong { display: block; font-size: 1.8rem; margin: 0.35rem 0; }
     .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(240px,1fr)); gap: 1rem; }
     .meta-card { background: rgba(88,44,131,0.25); border: 1px solid rgba(88,44,131,0.4); border-radius: 14px; padding: 1rem; backdrop-filter: blur(4px); }
     .meta-card strong { display: block; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.35rem; }
@@ -77,16 +90,47 @@
   </style>
 </head>
 <body>
-  <header class="hero-panel">
-    <p class="tag" style="color: var(--accent-gold);">♞ goodKnight / Demo</p>
-    <h1>MikeTheTiger.AI</h1>
-    <p class="lead">A searchable LSU concierge: ask about history, people, buildings, AI programs, or upcoming events. Everything runs client-side from a curated public fact pack.</p>
-    <div class="hero-meta">
-      <span id="meta-updated">Updated --</span>
-      <span id="meta-source">Source: --</span>
-      <span>Latency: <span id="meta-latency">--</span> ms</span>
+  <header class="hero-panel hero-panel--split">
+    <div class="hero-copy">
+      <p class="tag" style="color: var(--accent-gold);">♞ goodKnight / LSU Ops Console</p>
+      <h1>MikeTheTiger.AI</h1>
+      <p class="lead">Live LSU intelligence for students, fans, and operators. The front-end ships with transparent data lineage, zero private APIs, and an embeddable widget you can drop onto any static site.</p>
+      <div class="cta-row">
+        <a class="cta-primary" href="/lsu-widget/" target="_blank" rel="noopener">Launch live widget</a>
+        <a class="cta-ghost" href="https://github.com/goodkn-ght/goodkn-ght.github.io/tree/main/lsu-widget" target="_blank" rel="noopener">View bundle on GitHub</a>
+      </div>
+      <ul class="hero-list">
+        <li>⚡ Live LSU tabs (Athletics · Campus · Academic)</li>
+        <li>🛠️ GitHub Action ingests public feeds every 30 minutes</li>
+        <li>🗺️ LSU campus concierge with instant search + live web pulse</li>
+      </ul>
+    </div>
+    <div class="hero-card">
+      <h3>Embed snippet</h3>
+      <pre><code>&lt;link rel="stylesheet" href="https://goodkn-ght.github.io/lsu-widget/widget.css" /&gt;
+&lt;div id="lsu-widget" data-theme="dark"&gt;&lt;/div&gt;
+&lt;script src="https://goodkn-ght.github.io/lsu-widget/widget.js" defer&gt;&lt;/script&gt;</code></pre>
+      <p class="hero-meta">SHIP NOTE · Works on GitHub Pages, Vercel static, Netlify, or any vanilla HTML host.</p>
     </div>
   </header>
+
+  <section class="stat-deck">
+    <article class="stat-card">
+      <span>Data freshness</span>
+      <strong id="meta-updated">--</strong>
+      <p id="meta-source">Source: --</p>
+    </article>
+    <article class="stat-card">
+      <span>Latency</span>
+      <strong><span id="meta-latency">--</span> ms</strong>
+      <p>Client-side fact pack load</p>
+    </article>
+    <article class="stat-card">
+      <span>Live Widget</span>
+      <strong>Auto-refresh</strong>
+      <p>Every 45 seconds · 3 highlight lanes</p>
+    </article>
+  </section>
 
   <main class="container">
     <section class="panel meta-grid" id="meta-grid">
