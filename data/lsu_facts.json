@@ -1,0 +1,93 @@
+{
+  "updated_at": "2026-02-11T03:30:00Z",
+  "source": "Louisiana State University Fact Book 2025, LSU Research Newsroom, LSU Athletics Media Guide",
+  "highlights": [
+    {
+      "title": "Flagship Location",
+      "body": "LSU's main campus spans 1,000+ acres along the Mississippi River in Baton Rouge, Louisiana.",
+      "tags": ["location", "campus", "baton rouge"],
+      "links": ["https://www.lsu.edu/about/index.php"]
+    },
+    {
+      "title": "Enrollment & Community",
+      "body": "More than 37,000 students representing all 64 Louisiana parishes and 100+ countries.",
+      "tags": ["enrollment", "students", "community"],
+      "links": ["https://www.lsu.edu/oip/iss/index.php"]
+    },
+    {
+      "title": "Research Status",
+      "body": "LSU is Louisiana's only public Tier 1 (R1) research university with $400M+ in annual research expenditures.",
+      "tags": ["research", "academics", "r1"],
+      "links": ["https://www.lsu.edu/research/index.php"]
+    },
+    {
+      "title": "Signature Programs",
+      "body": "Strengths in energy systems, coastal science, digital media, cybersecurity, and AI (LSU's Stephenson Department of Entrepreneurship & Information Systems).",
+      "tags": ["programs", "ai", "cybersecurity"],
+      "links": ["https://www.lsu.edu/business/sdeis/index.php"]
+    },
+    {
+      "title": "Athletics",
+      "body": "LSU Tigers compete in the SEC with 51 team national titles and 100+ individual NCAA champions; Tiger Stadium is nicknamed Death Valley.",
+      "tags": ["athletics", "football", "tigers"],
+      "links": ["https://lsusports.net"]
+    }
+  ],
+  "faqs": [
+    {
+      "question": "What does LSU stand for?",
+      "answer": "Louisiana State University and Agricultural & Mechanical College.",
+      "tags": ["name", "acronym"],
+      "links": []
+    },
+    {
+      "question": "When was LSU founded?",
+      "answer": "LSU traces its roots to 1853 and has been the state's flagship since the Morrill Act era.",
+      "tags": ["history", "founded"],
+      "links": []
+    },
+    {
+      "question": "What are LSU's colors and mascot?",
+      "answer": "Official colors are Purple and Gold; the live mascot is Mike the Tiger (Mike VII).",
+      "tags": ["mascot", "colors"],
+      "links": ["https://www.lsu.edu/mikethetiger"]
+    },
+    {
+      "question": "Does LSU have AI programs?",
+      "answer": "Yes. LSU's AI stack includes the LSU Center for Computation & Technology, Stephenson Department of Entrepreneurship & Information Systems, and a new AI & Data Analytics minor launched in 2025.",
+      "tags": ["ai", "academics", "programs"],
+      "links": ["https://www.cct.lsu.edu"]
+    },
+    {
+      "question": "How successful is LSU football?",
+      "answer": "LSU Football claims four national championships (1958, 2003, 2007, 2019) and plays home games at Tiger Stadium with capacity of 102,321.",
+      "tags": ["football", "athletics"],
+      "links": ["https://lsusports.net/sports/fb"]
+    }
+  ],
+  "stats": {
+    "students": 37204,
+    "faculty": 5100,
+    "research_spend": 409000000,
+    "campus_acres": 1000,
+    "founded": 1853,
+    "mascot": "Mike the Tiger",
+    "colors": "Purple & Gold",
+    "ranking_ai": "Top 20 public AI talent pipeline in the Gulf South",
+    "notable_alumni": ["Seimone Augustus", "Shaquille O'Neal", "Donna Brazile", "Albert Belle"]
+  },
+  "events": [
+    {
+      "title": "Spring 2026 Priority Registration",
+      "date": "2026-03-04",
+      "details": "Final day to register without late fee for 2nd 8-week session.",
+      "tags": ["registration", "deadlines"]
+    },
+    {
+      "title": "Bayou AI Summit",
+      "date": "2026-04-12",
+      "details": "LSU Center for Computation & Technology hosts researchers on responsible AI for energy and coast.",
+      "tags": ["events", "ai", "conference"]
+    }
+  ]
+}

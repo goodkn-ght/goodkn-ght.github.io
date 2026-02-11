@@ -1,0 +1,294 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>LSU AI Widget | goodKnight</title>
+  <link rel="stylesheet" href="../styles.css">
+  <style>
+    :root {
+      --accent-lsu: #582c83;
+      --accent-gold: #fdd023;
+    }
+    body { background: #05060c; }
+    .lsu-container { max-width: 1100px; margin: 2rem auto 4rem; padding: 0 1.25rem; display: flex; flex-direction: column; gap: 1.5rem; }
+    .panel { background: var(--panel); border: 1px solid var(--border); border-radius: 14px; padding: 1.5rem; }
+    .meta-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: 1rem; }
+    .meta-card { background: rgba(88,44,131,0.2); border: 1px solid rgba(88,44,131,0.4); border-radius: 12px; padding: 1rem; }
+    .meta-card strong { display: block; font-size: 0.8rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.35rem; }
+    .ask-panel { display: flex; flex-direction: column; gap: 0.75rem; }
+    .ask-row { display: flex; gap: 0.5rem; flex-wrap: wrap; }
+    .ask-row input { flex: 1; min-width: 220px; background: #0b0d18; border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; color: #fff; padding: 0.85rem 1rem; font-size: 1rem; }
+    .ask-row button { background: var(--accent-lsu); border: none; padding: 0 1.5rem; border-radius: 10px; color: #fff; font-weight: 600; letter-spacing: 0.02em; cursor: pointer; transition: transform 0.1s ease, box-shadow 0.2s; }
+    .ask-row button:hover { transform: translateY(-1px); box-shadow: 0 8px 18px rgba(88,44,131,0.25); }
+    .chip-row { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+    .chip { border: 1px solid rgba(253,208,35,0.4); color: var(--fg); padding: 0.4rem 0.9rem; border-radius: 999px; font-size: 0.85rem; cursor: pointer; background: rgba(253,208,35,0.12); }
+    .chip:hover { border-color: var(--accent-gold); }
+    .response-panel { display: flex; flex-direction: column; gap: 1rem; }
+    .response-status { font-size: 0.85rem; color: var(--muted); display: flex; align-items: center; gap: 0.4rem; }
+    .response-status::before { content: ''; width: 8px; height: 8px; border-radius: 50%; background: rgba(255,255,255,0.3); box-shadow: 0 0 12px rgba(88,44,131,0.5); }
+    .response-status.live::before { background: #00d4aa; }
+    .response-status.idle::before { background: rgba(255,255,255,0.3); }
+    .response-text p { margin: 0.2rem 0; line-height: 1.6; }
+    .reference-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(220px,1fr)); gap: 0.75rem; }
+    .reference-card { border: 1px solid rgba(255,255,255,0.08); border-radius: 10px; padding: 0.85rem; background: rgba(0,0,0,0.2); }
+    .reference-card h4 { margin: 0 0 0.35rem; font-size: 0.95rem; color: var(--fg); }
+    .reference-card p { margin: 0; font-size: 0.85rem; color: var(--muted); }
+    .tag-pill { display: inline-flex; align-items: center; gap: 0.25rem; border: 1px solid rgba(255,255,255,0.12); border-radius: 999px; padding: 0.15rem 0.55rem; font-size: 0.7rem; text-transform: uppercase; letter-spacing: 0.05em; color: var(--muted); }
+    .facts-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(180px,1fr)); gap: 1rem; }
+    .fact-card { border: 1px solid rgba(255,255,255,0.1); border-radius: 12px; padding: 1rem; background: rgba(255,255,255,0.03); }
+    .fact-card span { display: block; font-size: 0.75rem; letter-spacing: 0.08em; text-transform: uppercase; color: var(--muted); margin-bottom: 0.4rem; }
+    .fact-card strong { font-size: 1.2rem; color: var(--fg); }
+    .events-panel { display: flex; flex-direction: column; gap: 0.75rem; }
+    .event-row { display: flex; gap: 0.75rem; align-items: flex-start; border-left: 3px solid var(--accent-gold); padding-left: 0.85rem; }
+    .event-date { font-weight: 700; color: var(--accent-gold); min-width: 90px; font-variant-numeric: tabular-nums; }
+    .event-row p { margin: 0.1rem 0 0; color: var(--muted); }
+    @media (max-width: 640px) { .ask-row button { width: 100%; } }
+  </style>
+</head>
+<body>
+  <header class="hero" style="padding: 2.5rem 1.5rem;">
+    <div class="hero__inner" style="grid-template-columns: 1fr;">
+      <div>
+        <p class="tag" style="color: var(--accent-gold);">♞ goodKnight / Demo</p>
+        <h1>LSU AI Widget</h1>
+        <p class="lead">Ask anything about Louisiana State University and get context, quick stats, and source links from the public fact pack.</p>
+        <div style="display:flex; gap:1rem; flex-wrap:wrap; margin-top:1rem; color:var(--muted); font-size:0.85rem;">
+          <span id="meta-updated">Updated --</span>
+          <span id="meta-source">Source: --</span>
+        </div>
+      </div>
+    </div>
+  </header>
+
+  <main class="lsu-container">
+    <section class="panel meta-grid" id="meta-grid">
+      <div class="meta-card">
+        <strong>Campus</strong>
+        <div>1,000+ acres on the Mississippi River<br><small>Established 1853</small></div>
+      </div>
+      <div class="meta-card">
+        <strong>Community</strong>
+        <div>37k+ students · 5k faculty · 330k alumni</div>
+      </div>
+      <div class="meta-card">
+        <strong>Specialties</strong>
+        <div>Energy systems · Coastal science · AI + Data</div>
+      </div>
+      <div class="meta-card">
+        <strong>Why this widget?</strong>
+        <div>Lightweight LSU concierge built from curated public facts (no API keys).</div>
+      </div>
+    </section>
+
+    <section class="panel ask-panel">
+      <div class="ask-row">
+        <input id="question" type="text" placeholder="Examples: How big is LSU? What's the AI scene like? Who is Mike the Tiger?">
+        <button id="ask-btn">Ask</button>
+      </div>
+      <div class="chip-row" id="chip-row">
+        <button class="chip" data-question="How many students attend LSU?">Enrollment</button>
+        <button class="chip" data-question="Tell me about LSU's AI programs.">AI Programs</button>
+        <button class="chip" data-question="What championships has LSU football won?">Football</button>
+        <button class="chip" data-question="Where is LSU located?">Campus</button>
+        <button class="chip" data-question="Any upcoming LSU events?">Events</button>
+      </div>
+    </section>
+
+    <section class="panel response-panel">
+      <div class="response-status idle" id="response-status">Waiting for a question…</div>
+      <div class="response-text" id="answer-text"></div>
+      <div class="reference-grid" id="reference-grid"></div>
+    </section>
+
+    <section class="panel">
+      <h3>Quick Facts</h3>
+      <div class="facts-grid" id="facts-grid"></div>
+    </section>
+
+    <section class="panel events-panel">
+      <h3>Upcoming LSU Moments</h3>
+      <div id="events-list"></div>
+    </section>
+  </main>
+
+  <footer style="text-align:center; padding:2rem; color:var(--muted); font-size:0.8rem;">
+    <p>Dataset: <code>data/lsu_facts.json</code> · Generated by goodKnight ♞</p>
+    <p><a href="../" style="color: var(--accent-gold);">← Back to Signal Lab</a></p>
+  </footer>
+
+  <script>
+    let knowledgeBase = [];
+    let lsuData = null;
+
+    const questionInput = document.getElementById('question');
+    const askBtn = document.getElementById('ask-btn');
+    const answerBox = document.getElementById('answer-text');
+    const statusEl = document.getElementById('response-status');
+    const refsEl = document.getElementById('reference-grid');
+
+    async function init() {
+      const resp = await fetch('../data/lsu_facts.json?t=' + Date.now());
+      lsuData = await resp.json();
+      document.getElementById('meta-updated').textContent = 'Updated ' + new Date(lsuData.updated_at).toLocaleString('en-US', { hour12: false });
+      document.getElementById('meta-source').textContent = 'Source: ' + lsuData.source;
+      hydrateKnowledge(lsuData);
+      renderFacts(lsuData.stats);
+      renderEvents(lsuData.events);
+    }
+
+    function hydrateKnowledge(data) {
+      knowledgeBase = [];
+      const pushEntry = (title, body, tags = [], links = []) => {
+        const tokens = (title + ' ' + body).toLowerCase().match(/[a-z0-9']+/g) || [];
+        knowledgeBase.push({ title, body, tags, links, tokens });
+      };
+      (data.highlights || []).forEach(item => pushEntry(item.title, item.body, item.tags, item.links));
+      (data.faqs || []).forEach(item => pushEntry(item.question, item.answer, item.tags, item.links));
+      (data.events || []).forEach(item => pushEntry(item.title + ' (' + item.date + ')', item.details, item.tags || ['events'], []));
+    }
+
+    function scoreEntry(entry, questionTokens) {
+      let score = 0;
+      const joinedQuestion = questionTokens.join(' ');
+      entry.tags.forEach(tag => {
+        if (joinedQuestion.includes(tag)) score += 4;
+      });
+      questionTokens.forEach(token => {
+        if (entry.tokens.includes(token)) score += 1;
+      });
+      return score;
+    }
+
+    function structuredStats(question) {
+      if (!lsuData || !lsuData.stats) return null;
+      const stats = lsuData.stats;
+      const lowerQ = question.toLowerCase();
+      if (/(student|enrollment|population)/.test(lowerQ)) {
+        return `LSU enrolls approximately ${stats.students.toLocaleString()} students with ${stats.faculty.toLocaleString()} faculty.`;
+      }
+      if (/(research|r1|funding|grants)/.test(lowerQ)) {
+        return `Annual research expenditures exceed $${(stats.research_spend/1e6).toFixed(0)}M, keeping LSU in the R1 tier.`;
+      }
+      if (/(mascot|tiger|colors)/.test(lowerQ)) {
+        return `Mascot: ${stats.mascot}; official colors: ${stats.colors}. Mike the Tiger's habitat sits beside Tiger Stadium.`;
+      }
+      if (/(history|founded|establish)/.test(lowerQ)) {
+        return `LSU traces back to ${stats.founded} as Louisiana's flagship land-grant institution.`;
+      }
+      return null;
+    }
+
+    function answerQuestion(q) {
+      if (!q.trim()) return;
+      statusEl.textContent = 'Thinking…';
+      statusEl.classList.remove('idle');
+      statusEl.classList.add('live');
+      answerBox.innerHTML = '';
+      refsEl.innerHTML = '';
+
+      const tokens = q.toLowerCase().match(/[a-z0-9']+/g) || [];
+      const scored = knowledgeBase.map(entry => ({ entry, score: scoreEntry(entry, tokens) }))
+        .filter(item => item.score > 0)
+        .sort((a, b) => b.score - a.score)
+        .slice(0, 3);
+
+      let responseParts = [];
+      const statLine = structuredStats(q);
+      if (statLine) responseParts.push(statLine);
+      if (scored.length) {
+        scored.forEach((item, idx) => {
+          const prefix = idx === 0 ? 'Headline:' : 'Also note:';
+          responseParts.push(`${prefix} ${item.entry.body}`);
+        });
+      } else {
+        responseParts.push("I don't see that in the fact pack yet. Try rephrasing or ask about enrollment, programs, athletics, or events.");
+      }
+
+      const answerHTML = responseParts.map(line => `<p>${line}</p>`).join('');
+      simulateTyping(answerHTML, () => {
+        statusEl.textContent = scored.length ? 'Answer generated from LSU fact pack.' : 'No direct match — suggested follow-ups shown.';
+      });
+
+      refsEl.innerHTML = scored.map(item => `
+        <div class="reference-card">
+          <h4>${item.entry.title}</h4>
+          <p>${item.entry.body}</p>
+          <div style="margin-top:0.35rem; display:flex; flex-wrap:wrap; gap:0.3rem;">
+            ${(item.entry.tags || []).map(tag => `<span class="tag-pill">${tag}</span>`).join('')}
+          </div>
+          ${item.entry.links && item.entry.links.length ? `<div style="margin-top:0.4rem;">
+            <a href="${item.entry.links[0]}" target="_blank" rel="noopener" style="color: var(--accent-gold); font-size:0.8rem;">Source ↗</a>
+          </div>` : ''}
+        </div>
+      `).join('');
+    }
+
+    function simulateTyping(html, callback) {
+      answerBox.innerHTML = '';
+      const tempDiv = document.createElement('div');
+      tempDiv.innerHTML = html;
+      const nodes = Array.from(tempDiv.childNodes);
+      let idx = 0;
+      function renderNext() {
+        if (idx >= nodes.length) { if (callback) callback(); return; }
+        answerBox.appendChild(nodes[idx]);
+        idx += 1;
+        setTimeout(renderNext, 120);
+      }
+      renderNext();
+    }
+
+    function renderFacts(stats = {}) {
+      const facts = [
+        { label: 'Founded', value: stats.founded },
+        { label: 'Students', value: stats.students ? stats.students.toLocaleString() : '--' },
+        { label: 'Faculty', value: stats.faculty ? stats.faculty.toLocaleString() : '--' },
+        { label: 'Research Spend', value: stats.research_spend ? '$' + (stats.research_spend/1e6).toFixed(0) + 'M' : '--' },
+        { label: 'Campus Acres', value: stats.campus_acres },
+        { label: 'Mascot', value: stats.mascot },
+        { label: 'Colors', value: stats.colors },
+        { label: 'AI Ranking', value: stats.ranking_ai }
+      ];
+      document.getElementById('facts-grid').innerHTML = facts.map(f => `
+        <div class="fact-card">
+          <span>${f.label}</span>
+          <strong>${f.value || '--'}</strong>
+        </div>
+      `).join('');
+    }
+
+    function renderEvents(events = []) {
+      if (!events.length) {
+        document.getElementById('events-list').innerHTML = '<p style="color:var(--muted)">No events recorded.</p>';
+        return;
+      }
+      document.getElementById('events-list').innerHTML = events.map(evt => `
+        <div class="event-row">
+          <div class="event-date">${new Date(evt.date).toLocaleDateString('en-US', { month: 'short', day: 'numeric' })}</div>
+          <div>
+            <strong>${evt.title}</strong>
+            <p>${evt.details}</p>
+          </div>
+        </div>
+      `).join('');
+    }
+
+    askBtn.addEventListener('click', () => answerQuestion(questionInput.value));
+    questionInput.addEventListener('keydown', (e) => {
+      if (e.key === 'Enter') {
+        answerQuestion(questionInput.value);
+      }
+    });
+    document.getElementById('chip-row').addEventListener('click', (e) => {
+      if (e.target.matches('[data-question]')) {
+        const q = e.target.getAttribute('data-question');
+        questionInput.value = q;
+        answerQuestion(q);
+      }
+    });
+
+    init();
+  </script>
+</body>
+</html>
