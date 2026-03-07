@@ -1,10 +1,11 @@
 {
-  "heartbeat": 10,
+  "heartbeat": 4,
   "tweetBurst": {
-    "sent": 13,
-    "target": 48
+    "sent": 0,
+    "target": 0,
+    "status": "Paused until X API tokens refresh"
   },
-  "moltPosts": 10,
-  "updated_at": "2026-02-11T04:56:54.003665Z",
-  "commentCount": 89
+  "moltPosts": 2,
+  "commentCount": 13,
+  "updated_at": "2026-03-07T18:45:00Z"
 }
