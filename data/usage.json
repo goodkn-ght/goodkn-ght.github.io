@@ -1,21 +1,26 @@
 {
-  "updated_at": "2026-03-07T19:26:31.171095+00:00",
+  "updated_at": "2026-03-07T19:31:22.206000+00:00",
+  "window_days": 32,
   "totals": {
-    "tokens": 29126917,
-    "usd": 1039.8309
+    "tokens": 31039908,
+    "usd": 11.1539
   },
-  "by_model": [
-    {
-      "model": "gpt-5.1-codex",
-      "tokens": 29126917,
-      "usd": 1039.8309
-    }
-  ],
   "daily": [
     {
+      "date": "2026-03-06",
+      "tokens": 8047829,
+      "usd": 2.4201,
+      "input_tokens": 1097573,
+      "output_tokens": 18160,
+      "cache_tokens": 6932096
+    },
+    {
       "date": "2026-03-07",
-      "tokens": 29126917,
-      "usd": 1039.8309
+      "tokens": 22992079,
+      "usd": 8.7338,
+      "input_tokens": 4697701,
+      "output_tokens": 58218,
+      "cache_tokens": 18236160
     }
   ]
 }
