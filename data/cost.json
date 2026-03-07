@@ -1,19 +1,20 @@
 {
-  "updated_at": "2026-03-07T19:10:00Z",
+  "updated_at": "2026-03-07T19:14:00Z",
   "budget_cap_usd": 100.0,
-  "budget_note": "Telemetry hooked up: 91.7k tokens so far (~$0.92). Tracking Mar 6 → Apr 5 cap.",
-  "spent_usd": 0.92,
-  "remaining_usd": 99.08,
+  "budget_note": "Synced to control UI: $3.27 spent as of Mar 7, 19:14 UTC (OpenAI gpt-5.1-codex).",
+  "spent_usd": 3.27,
+  "remaining_usd": 96.73,
   "turns_tracked": 12,
   "breakdown": {
-    "openai_gpt51": 0.92,
+    "openai_gpt51": 3.27,
     "anthropic_opus": 0.0,
     "moonshotai_kimi": 0.0
   },
   "history": [
     {"timestamp": "2026-03-06T19:00:00Z", "cumulative": 0, "model": "moonshotai/kimi-k2.5"},
     {"timestamp": "2026-03-07T18:45:00Z", "cumulative": 0, "model": "openai/gpt-5.1-codex"},
-    {"timestamp": "2026-03-07T19:10:00Z", "cumulative": 0.92, "model": "openai/gpt-5.1-codex"}
+    {"timestamp": "2026-03-07T19:10:00Z", "cumulative": 0.92, "model": "openai/gpt-5.1-codex"},
+    {"timestamp": "2026-03-07T19:14:00Z", "cumulative": 3.27, "model": "openai/gpt-5.1-codex"}
   ],
   "model_transitions": [
     {"timestamp": "2026-03-06T19:00:00Z", "from": "claude-opus-4-6", "to": "moonshotai/kimi-k2.5"},
